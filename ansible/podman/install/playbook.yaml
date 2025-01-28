@@ -14,6 +14,16 @@
         state: present
         update_cache: yes
 
+    - name: Configure unprivileged port start
+      lineinfile:
+        path: /etc/sysctl.d/user_priv_ports.conf
+        line: "net.ipv4.ip_unprivileged_port_start=80"
+        create: yes
+
+    - name: Apply sysctl settings
+      command: sysctl --system
+      changed_when: false
+
     - name: Create stacks directory with proper permissions
       file:
         path: "{{ stacks_path }}"
