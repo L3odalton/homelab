@@ -32,7 +32,7 @@
     - name: Create PostgreSQL container
       containers.podman.podman_container:
         name: wiki-db
-        image: "postgres:{{ postgres_version }}"
+        image: "docker.io/library/postgres:{{ postgres_version }}"
         state: started
         restart_policy: always
         env:
