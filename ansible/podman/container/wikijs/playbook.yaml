@@ -41,8 +41,7 @@
           POSTGRES_DB: op://secrets/WikiJS/Env/Database
         volumes:
           - "{{ wiki_data_path }}/db:/var/lib/postgresql/data:Z"
-        networks:
-          - name: backend
+        network: backend
 
     - name: Create Wiki.js container
       containers.podman.podman_container:
@@ -59,8 +58,6 @@
           DB_NAME: op://secrets/WikiJS/Env/Database
         ports:
           - "3000:3000"
-        networks:
-          - name: proxy
-          - name: backend
+        network: "backend,proxy"
         depends_on:
           - wiki-db
