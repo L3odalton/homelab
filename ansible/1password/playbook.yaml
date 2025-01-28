@@ -23,7 +23,6 @@
         src: /tmp/op.zip
         dest: /usr/local/bin
         remote_src: true
-        extra_opts: ['-od']
 
     - name: Remove temp ZIP file
       file:
