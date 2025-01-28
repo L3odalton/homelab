@@ -1,0 +1,36 @@
+---
+- name: Install 1Password CLI
+  hosts: all
+  become: true
+  tasks:
+    - name: Fetch the latest  1Password CLI release
+      shell: curl https://app-updates.agilebits.com/check/1/0/CLI2/en/2.0.0/N -s | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+'
+      register: op_version_output
+
+    - name: Set 1Password CLI version
+      set_fact:
+        op_version: "{{ op_version_output.stdout }}"
+    
+    - name: Download 1Password CLI
+      get_url:
+        url: https://cache.agilebits.com/dist/1P/op2/pkg/"$OP_VERSION"/op_linux_"$ARCH"_"$OP_VERSION".zip
+        dest: /tmp/op.zip
+    
+    - name: Unzip 1Password CLI
+      unarchive:
+        src: /tmp/op.zip
+        dest: /usr/local/bin
+        remote_src: true
+
+    - name: Remove temp ZIP file
+      file:
+        path: /tmp/op.zip
+        state: absent
+    
+    - name: Verify Installation
+      shell: op --version
+      register: op_version_check
+
+    - name: Show Installed Version
+      debug:
+        msg: "Installed 1Password CLI version: {{ op_version_check.stdout }}"
