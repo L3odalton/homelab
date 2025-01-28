@@ -2,6 +2,8 @@
 - name: Test 1Password CLI
   hosts: all
   tasks:
-    - name: Check token value
+    - name: Check token and read secret
       debug:
-        msg: "Token: {{ op_token }}"
+        msg:
+          - "Token: {{ op_token }}"
+          - "Secret read attempt: {{ lookup('pipe', 'OP_SERVICE_ACCOUNT_TOKEN=' + op_token + ' op read \"op://secrets/WikiJS/Env/Username\"') }}"
