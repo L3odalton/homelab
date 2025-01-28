@@ -9,6 +9,11 @@
         state: present
         update_cache: yes
 
+    - name: Create proxy network
+      containers.podman.podman_network:
+        name: proxy
+        state: present
+
     - name: Verify Podman installation
       command: podman --version
       register: podman_version
