@@ -15,7 +15,6 @@
     - name: Try to get secret
       shell: |
         export OP_SERVICE_ACCOUNT_TOKEN="{{ op_token }}"
-        op signin
         op read "op://secrets/WikiJS/Env/Username"
       register: secret_output
       no_log: true
