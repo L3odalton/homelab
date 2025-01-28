@@ -41,9 +41,9 @@
         state: started
         restart_policy: always
         env:
-          POSTGRES_USER: "$( op read op://secrets/WikiJS/Env/Username )"
-          POSTGRES_PASSWORD: "$( op read op://secrets/WikiJS/Env/Password )"
-          POSTGRES_DB: "$( op read op://secrets/WikiJS/Env/Database )"
+          POSTGRES_USER: $(op read op://secrets/WikiJS/Env/Username)
+          POSTGRES_PASSWORD: $(op read op://secrets/WikiJS/Env/Password)
+          POSTGRES_DB: $(op read op://secrets/WikiJS/Env/Database)
         volumes:
           - "{{ wiki_data_path }}/db:/var/lib/postgresql/data:Z"
         network: backend
@@ -58,9 +58,9 @@
           DB_TYPE: postgres
           DB_HOST: wiki-db
           DB_PORT: 5432
-          DB_USER: "$( op read op://secrets/WikiJS/Env/Username )"
-          DB_PASS: "$( op read op://secrets/WikiJS/Env/Password )"
-          DB_NAME: "$( op read op://secrets/WikiJS/Env/Database )"
+          DB_USER: $(op read op://secrets/WikiJS/Env/Username)
+          DB_PASS: $(op read op://secrets/WikiJS/Env/Password)
+          DB_NAME: $(op read op://secrets/WikiJS/Env/Database)
         ports:
           - "3000:3000"
         network: "backend,proxy"
