@@ -6,9 +6,8 @@
       shell: |
         OP_SERVICE_ACCOUNT_TOKEN="{{ op_token }}" op read "op://secrets/WikiJS/Env/Username"
       register: secret_result
+      no_log: true
 
-    - name: Display token and result
+    - name: Display secret
       debug:
-        msg:
-          - "Token: {{ op_token }}"
-          - "Secret result: {{ secret_result.stdout }}"
+        msg: "Secret result: {{ secret_result.stdout }}"
