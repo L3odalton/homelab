@@ -5,7 +5,7 @@
     - name: Echo key store value
       debug:
         msg: "The value from key store is: {{ key_store.test_key }}"
-      no_log: true
+      no_log: false
 
     - name: upgrade apt packages
       become: true
