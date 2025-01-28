@@ -1,0 +1,66 @@
+---
+- name: Deploy Wiki.js with PostgreSQL
+  hosts: all
+  become: true
+  vars:
+    wiki_data_path: /opt/stacks/wiki-js
+    wiki_version: "2"
+    postgres_version: "15-alpine"
+
+  pre_tasks:
+    - name: Export 1Password Service Account token
+      shell: export OP_SERVICE_ACCOUNT_TOKEN="{{ op_token }}"
+      no_log: true
+      when: op_token is defined
+
+  tasks:
+    - name: Create required directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ wiki_data_path }}"
+        - "{{ wiki_data_path }}/db"
+
+    - name: Create internal backend network
+      containers.podman.podman_network:
+        name: backend
+        state: present
+        internal: true
+
+    - name: Create PostgreSQL container
+      containers.podman.podman_container:
+        name: wiki-db
+        image: "postgres:{{ postgres_version }}"
+        state: started
+        restart_policy: always
+        env:
+          POSTGRES_USER: op://vault/wikijs/database/username
+          POSTGRES_PASSWORD: op://vault/wikijs/database/password
+          POSTGRES_DB: op://vault/wikijs/database/name
+        volumes:
+          - "{{ wiki_data_path }}/db:/var/lib/postgresql/data:Z"
+        networks:
+          - name: backend
+
+    - name: Create Wiki.js container
+      containers.podman.podman_container:
+        name: wiki
+        image: "ghcr.io/requarks/wiki:{{ wiki_version }}"
+        state: started
+        restart_policy: always
+        env:
+          DB_TYPE: postgres
+          DB_HOST: wiki-db
+          DB_PORT: 5432
+          DB_USER: op://vault/wikijs/database/username
+          DB_PASS: op://vault/wikijs/database/password
+          DB_NAME: op://vault/wikijs/database/name
+        ports:
+          - "3000:3000"
+        networks:
+          - name: proxy
+          - name: backend
+        depends_on:
+          - wiki-db
