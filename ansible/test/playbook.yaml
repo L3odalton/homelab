@@ -14,8 +14,7 @@
 
     - name: Try to get secret
       shell: |
-        export OP_SERVICE_ACCOUNT_TOKEN="{{ op_token }}"
-        op read "op://secrets/WikiJS/Env/Username"
+        OP_SERVICE_ACCOUNT_TOKEN="{{ op_token }}" op read "op://secrets/WikiJS/Env/Username"
       register: secret_output
 
     - name: Display results
