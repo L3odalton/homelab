@@ -5,4 +5,3 @@
     - name: Check token value
       debug:
         msg: "Token: {{ op_token }}"
-        no_log: true
