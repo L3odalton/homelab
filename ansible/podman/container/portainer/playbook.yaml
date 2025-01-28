@@ -1,7 +1,7 @@
 ---
 - name: Deploy Portainer with Podman
   hosts: all
-  become: true
+  become: false
   vars:
     portainer_version: "2.21.5"
 

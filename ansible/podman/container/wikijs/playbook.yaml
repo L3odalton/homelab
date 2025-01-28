@@ -1,15 +1,20 @@
 ---
 - name: Deploy Wiki.js with PostgreSQL
   hosts: all
-  become: true
+  become: false
   vars:
-    wiki_data_path: /opt/stacks/wiki-js
+    wiki_data_path: /opt/stacks/wikijs
     wiki_version: "2"
     postgres_version: "15-alpine"
 
   pre_tasks:
     - name: Export 1Password Service Account token
       shell: export OP_SERVICE_ACCOUNT_TOKEN="{{ op_token }}"
+      no_log: true
+      when: op_token is defined
+
+    - name: Sign in to 1Password
+      shell: op signin
       no_log: true
       when: op_token is defined
 
@@ -36,9 +41,9 @@
         state: started
         restart_policy: always
         env:
-          POSTGRES_USER: op://secrets/WikiJS/Env/Username
-          POSTGRES_PASSWORD: op://secrets/WikiJS/Env/Password
-          POSTGRES_DB: op://secrets/WikiJS/Env/Database
+          POSTGRES_USER: "{{ lookup('pipe', 'op read op://secrets/WikiJS/Env/Username') }}"
+          POSTGRES_PASSWORD: "{{ lookup('pipe', 'op read op://secrets/WikiJS/Env/Password') }}"
+          POSTGRES_DB: "{{ lookup('pipe', 'op read op://secrets/WikiJS/Env/Database') }}"
         volumes:
           - "{{ wiki_data_path }}/db:/var/lib/postgresql/data:Z"
         network: backend
@@ -53,9 +58,9 @@
           DB_TYPE: postgres
           DB_HOST: wiki-db
           DB_PORT: 5432
-          DB_USER: op://secrets/WikiJS/Env/Username
-          DB_PASS: op://secrets/WikiJS/Env/Password
-          DB_NAME: op://secrets/WikiJS/Env/Database
+          DB_USER: "{{ lookup('pipe', 'op read op://secrets/WikiJS/Env/Username') }}"
+          DB_PASS: "{{ lookup('pipe', 'op read op://secrets/WikiJS/Env/Password') }}"
+          DB_NAME: "{{ lookup('pipe', 'op read op://secrets/WikiJS/Env/Database') }}"
         ports:
           - "3000:3000"
         network: "backend,proxy"

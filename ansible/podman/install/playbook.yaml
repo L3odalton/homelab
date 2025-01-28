@@ -2,12 +2,26 @@
 - name: Install Podman
   hosts: all
   become: true
+  vars:
+    podman_user: "{{ ansible_user }}"
+    podman_group: "{{ ansible_user }}"
+    stacks_path: /opt/stacks
+
   tasks:
     - name: Install Podman
       apt:
         name: podman
         state: present
         update_cache: yes
+
+    - name: Create stacks directory with proper permissions
+      file:
+        path: "{{ stacks_path }}"
+        state: directory
+        owner: "{{ podman_user }}"
+        group: "{{ podman_group }}"
+        mode: '0755'
+        recurse: yes
 
     - name: Create proxy network
       containers.podman.podman_network:
