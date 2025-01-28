@@ -3,6 +3,11 @@
   hosts: all
   become: true
   tasks:
+    - name: Ensure unzip is installed
+      package:
+        name: unzip
+        state: present
+    
     - name: Fetch the latest 1Password CLI release
       shell: curl https://app-updates.agilebits.com/check/1/0/CLI2/en/2.0.0/N -s | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+'
       register: op_version_output
