@@ -16,19 +16,21 @@
       when: op_token is defined
 
     - name: Get secrets from 1Password
-      shell: op read "{{ item }}"
+      shell: |
+        export OP_SERVICE_ACCOUNT_TOKEN="{{ op_token }}"
+        DB_USERNAME=$(op read op://secrets/WikiJS/Env/Username)
+        DB_PASSWORD=$(op read op://secrets/WikiJS/Env/Password)
+        DB_NAME=$(op read op://secrets/WikiJS/Env/Database)
+        echo "{\"username\":\"$DB_USERNAME\",\"password\":\"$DB_PASSWORD\",\"dbname\":\"$DB_NAME\"}"
       register: op_output
       no_log: true
-      with_items:
-        - op://secrets/WikiJS/Env/Username
-        - op://secrets/WikiJS/Env/Password
-        - op://secrets/WikiJS/Env/Database
+      when: op_token is defined
 
     - name: Set fact for secrets
       set_fact:
-        db_username: "{{ op_output.results[0].stdout }}"
-        db_password: "{{ op_output.results[1].stdout }}"
-        db_name: "{{ op_output.results[2].stdout }}"
+        db_username: "{{ (op_output.stdout | from_json).username }}"
+        db_password: "{{ (op_output.stdout | from_json).password }}"
+        db_name: "{{ (op_output.stdout | from_json).dbname }}"
       no_log: true
 
   tasks:
