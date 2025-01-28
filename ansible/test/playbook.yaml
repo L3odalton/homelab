@@ -1,7 +1,12 @@
 ---
-- name: Perform full APT upgrade
+- name: Test playbook with key store
   hosts: all
   tasks:
+    - name: Echo key store value
+      debug:
+        msg: "The value from key store is: {{ key_store.test_key }}"
+      no_log: true
+
     - name: upgrade apt packages
       become: true
       ansible.builtin.apt:
