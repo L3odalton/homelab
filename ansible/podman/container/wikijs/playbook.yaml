@@ -59,5 +59,3 @@
         ports:
           - "3000:3000"
         network: "backend,proxy"
-        depends_on:
-          - wiki-db
