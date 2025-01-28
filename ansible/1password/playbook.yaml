@@ -3,24 +3,27 @@
   hosts: all
   become: true
   tasks:
-    - name: Fetch the latest  1Password CLI release
+    - name: Fetch the latest 1Password CLI release
       shell: curl https://app-updates.agilebits.com/check/1/0/CLI2/en/2.0.0/N -s | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+'
       register: op_version_output
 
     - name: Set 1Password CLI version
       set_fact:
-        op_version: "{{ op_version_output.stdout }}"
+        op_version: "v{{ op_version_output.stdout }}"
+        arch: "amd64"
     
     - name: Download 1Password CLI
       get_url:
-        url: https://cache.agilebits.com/dist/1P/op2/pkg/"$OP_VERSION"/op_linux_"$ARCH"_"$OP_VERSION".zip
+        url: "https://cache.agilebits.com/dist/1P/op2/pkg/{{ op_version }}/op_linux_{{ arch }}_{{ op_version }}.zip"
         dest: /tmp/op.zip
+        mode: '0644'
     
     - name: Unzip 1Password CLI
       unarchive:
         src: /tmp/op.zip
         dest: /usr/local/bin
         remote_src: true
+        extra_opts: ['-od']
 
     - name: Remove temp ZIP file
       file:
