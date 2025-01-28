@@ -13,11 +13,6 @@
       no_log: true
       when: op_token is defined
 
-    - name: Sign in to 1Password
-      shell: op signin
-      no_log: true
-      when: op_token is defined
-
   tasks:
     - name: Create required directories
       file:
@@ -28,7 +23,12 @@
         - "{{ wiki_data_path }}"
         - "{{ wiki_data_path }}/db"
 
-    - name: Create internal backend network
+    - name: Create proxy network if not present
+      containers.podman.podman_network:
+        name: proxy
+        state: present
+
+    - name: Create internal backend network if not present
       containers.podman.podman_network:
         name: backend
         state: present
