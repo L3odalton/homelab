@@ -2,24 +2,7 @@
 - name: Test 1Password CLI
   hosts: all
   tasks:
-    - name: Check if op CLI is installed
-      shell: which op
-      register: op_check
-      ignore_errors: true
-
-    - name: Show op version
-      shell: op --version
-      register: op_version
-      when: op_check.rc == 0
-
-    - name: Try to get secret
-      shell: |
-        OP_SERVICE_ACCOUNT_TOKEN="{{ op_token }}" op read "op://secrets/WikiJS/Env/Username"
-      register: secret_output
-
-    - name: Display results
+    - name: Check token value
       debug:
-        msg: 
-          - "OP CLI present: {{ op_check.rc == 0 }}"
-          - "OP Version: {{ op_version.stdout if op_version is defined else 'Not available' }}"
-          - "Secret attempt output: {{ secret_output.stderr if secret_output.stderr is defined else secret_output.stdout }}"
+        msg: "Token: {{ op_token }}"
+        no_log: true
