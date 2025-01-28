@@ -25,6 +25,5 @@
         volumes:
           - /opt/stacks/portainer:/data
           - /run/podman/podman.sock:/var/run/docker.sock:Z
-        networks:
-          - name: proxy
+        network: proxy
         force_restart: true
