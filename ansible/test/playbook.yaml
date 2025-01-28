@@ -17,7 +17,6 @@
         export OP_SERVICE_ACCOUNT_TOKEN="{{ op_token }}"
         op read "op://secrets/WikiJS/Env/Username"
       register: secret_output
-      no_log: false
 
     - name: Display results
       debug:
