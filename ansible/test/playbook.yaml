@@ -4,7 +4,7 @@
   tasks:
     - name: Echo key store value
       debug:
-        msg: "The value from key store is: {{ key_store.test_key }}"
+        msg: "The value from key store is: {{ lookup('env', 'TEST_KEY') }}"
       no_log: false
 
     - name: upgrade apt packages
