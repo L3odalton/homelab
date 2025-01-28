@@ -2,12 +2,8 @@
 - name: Perform full APT upgrade
   hosts: all
   tasks:
-    - name: Run apt-get update
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
-    - name: Upgrade all installed packages
-      apt:
-        upgrade: dist
-        force_apt_get: yes
-        autoremove: yes
+    - name: upgrade apt packages
+      become: true
+      ansible.builtin.apt:
+        upgrade: true
+        update_cache: true
