@@ -1,14 +1,15 @@
 ---
-- name: Test playbook with key store
+- name: Test 1Password CLI
   hosts: all
   tasks:
-    - name: Echo key store value
-      debug:
-        msg: "The value from key store is: {{ lookup('env', 'test_key') }}"
-      no_log: false
+    - name: Setup 1Password and get secret
+      shell: |
+        export OP_SERVICE_ACCOUNT_TOKEN="{{ op_token }}"
+        export TEST_SECRET="op://secrets/WikiJS/Env/Username"
+        echo $TEST_SECRET
+      register: secret_output
+      no_log: true
 
-    - name: upgrade apt packages
-      become: true
-      ansible.builtin.apt:
-        upgrade: true
-        update_cache: true
+    - name: Display the secret
+      debug:
+        msg: "The secret value is: {{ secret_output.stdout }}"
