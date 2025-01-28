@@ -2,6 +2,9 @@
 - name: Deploy Portainer with Podman
   hosts: all
   become: true
+  vars:
+    portainer_version: "2.21.5"
+
   tasks:
     - name: Create Portainer directory
       file:
@@ -12,7 +15,7 @@
     - name: Create Portainer container
       containers.podman.podman_container:
         name: portainer
-        image: docker.io/portainer/portainer-ce:2.23.0
+        image: "docker.io/portainer/portainer-ce:{{ portainer_version }}"
         state: started
         restart_policy: always
         privileged: true
@@ -22,3 +25,4 @@
         volumes:
           - /opt/stacks/portainer:/data
           - /run/podman/podman.sock:/var/run/docker.sock:Z
+        force_restart: true
