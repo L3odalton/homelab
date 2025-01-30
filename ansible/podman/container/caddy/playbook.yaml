@@ -1,0 +1,65 @@
+---
+- name: Deploy Caddy Reverse Proxy
+  hosts: all
+  become: false
+  vars:
+    caddy_data_path: /opt/stacks/caddy
+    caddy_version: "2.7-alpine"
+
+  pre_tasks:
+    - name: Get Cloudflare credentials from 1Password
+      shell: |
+        OP_SERVICE_ACCOUNT_TOKEN="{{ op_token }}" op read "op://secrets/Cloudflare/email"
+      register: cf_email_output
+      no_log: true
+
+    - name: Get Cloudflare API token
+      shell: |
+        OP_SERVICE_ACCOUNT_TOKEN="{{ op_token }}" op read "op://secrets/Cloudflare/api_token"
+      register: cf_token_output
+      no_log: true
+
+    - name: Set fact for secrets
+      set_fact:
+        cloudflare_email: "{{ cf_email_output.stdout }}"
+        cloudflare_api_token: "{{ cf_token_output.stdout }}"
+      no_log: true
+
+  tasks:
+    - name: Create required directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ caddy_data_path }}"
+        - "{{ caddy_data_path }}/data"
+        - "{{ caddy_data_path }}/config"
+
+    - name: Copy Caddyfile
+      copy:
+        src: Caddyfile
+        dest: "{{ caddy_data_path }}/config/Caddyfile"
+        mode: '0644'
+
+    - name: Create proxy network if not present
+      containers.podman.podman_network:
+        name: proxy
+        state: present
+
+    - name: Deploy Caddy container
+      containers.podman.podman_container:
+        name: caddy
+        image: "docker.io/library/caddy:{{ caddy_version }}"
+        state: started
+        restart_policy: always
+        env:
+          CLOUDFLARE_EMAIL: "{{ cloudflare_email }}"
+          CLOUDFLARE_API_TOKEN: "{{ cloudflare_api_token }}"
+        ports:
+          - "80:80"
+          - "443:443"
+        volumes:
+          - "{{ caddy_data_path }}/config/Caddyfile:/etc/caddy/Caddyfile:ro"
+          - "{{ caddy_data_path }}/data:/data"
+        network: proxy
