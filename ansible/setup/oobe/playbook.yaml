@@ -32,7 +32,7 @@
 
     - name: Restart SSH service
       service:
-        name: sshd
+        name: ssh
         state: restarted
 
     - name: Update apt cache
