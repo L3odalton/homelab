@@ -12,7 +12,26 @@ resource "proxmox_vm_qemu" "srv-test" {
 
     network {
         bridge = "vmbr0"
+        model  = "virtio"
     }
+
+    disks {
+        scsi {
+            scsi0 {
+                disk {
+                    storage = "local-lvm"
+                    size    = "20G" 
+                }
+            }
+        }
+    ide {
+        ide1 {
+            cloudinit {
+                storage = "local-lvm"
+            }
+        }
+    }
+}
 
     os_type = "cloud-init"
     ipconfig0 = "ip=10.0.100.248/24,gw=10.0.100.1"
