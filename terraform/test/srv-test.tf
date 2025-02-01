@@ -10,7 +10,11 @@ resource "proxmox_vm_qemu" "srv-test" {
     cpu = "host"
     memory = 4096
 
+    os_type = "cloud-init"
+    ipconfig0 = "ip=10.0.100.248/24,gw=10.0.100.1"
+
     network {
+        id = 0
         bridge = "vmbr0"
         model  = "virtio"
     }
@@ -24,15 +28,12 @@ resource "proxmox_vm_qemu" "srv-test" {
                 }
             }
         }
-    ide {
-        ide1 {
-            cloudinit {
-                storage = "local-lvm"
+        ide {
+            ide1 {
+                cloudinit {
+                    storage = "local-lvm"
+                }
             }
         }
     }
-}
-
-    os_type = "cloud-init"
-    ipconfig0 = "ip=10.0.100.248/24,gw=10.0.100.1"
 }
