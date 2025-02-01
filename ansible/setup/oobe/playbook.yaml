@@ -1,6 +1,6 @@
 ---
 - name: Initial Ubuntu Server Setup
-  hosts: all
+  hosts: oobe
   become: true
   tasks:
     - name: Allow mgrsys to run sudo commands without password
