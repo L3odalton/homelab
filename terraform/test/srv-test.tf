@@ -7,7 +7,7 @@ resource "proxmox_vm_qemu" "srv-test" {
     clone = "ubuntu-cloud-init-2"
     cores = 2
     sockets = 1
-    cpu = "host"
+    cpu_type = "host"
     memory = 4096
 
     os_type = "cloud-init"
