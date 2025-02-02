@@ -1,0 +1,62 @@
+---
+- name: Deploy Wiki.js with PostgreSQL
+  hosts: podman
+  become: false
+  vars:
+    wiki_data_path: /opt/stacks/wikijs
+    wiki_version: "2"
+    postgres_version: "15-alpine"
+  vars_files:
+    secrests.yaml
+
+  tasks:
+    - name: Create required directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ wiki_data_path }}"
+        - "{{ wiki_data_path }}/db"
+
+    - name: Create proxy network if not present
+      containers.podman.podman_network:
+        name: proxy
+        state: present
+
+    - name: Create internal backend network if not present
+      containers.podman.podman_network:
+        name: backend
+        state: present
+        internal: true
+
+    - name: Create PostgreSQL container
+      containers.podman.podman_container:
+        name: wiki-db
+        image: "docker.io/library/postgres:{{ postgres_version }}"
+        state: started
+        restart_policy: always
+        env:
+          POSTGRES_USER: "{{ wikijs.username }}"
+          POSTGRES_PASSWORD: "{{ wikijs.password }}"
+          POSTGRES_DB: "{{ wikijs.name }}"
+        volumes:
+          - "{{ wiki_data_path }}/db:/var/lib/postgresql/data:Z"
+        network: backend
+
+    - name: Create Wiki.js container
+      containers.podman.podman_container:
+        name: wiki
+        image: "ghcr.io/requarks/wiki:{{ wiki_version }}"
+        state: started
+        restart_policy: always
+        env:
+          DB_TYPE: postgres
+          DB_HOST: wiki-db
+          DB_PORT: 5432
+          DB_USER: "{{ wikijs.username }}"
+          DB_PASS: "{{ wikijs.password }}"
+          DB_NAME: "{{ wikijs.name }}"
+        ports:
+          - "3000:3000"
+        network: "backend,proxy"
