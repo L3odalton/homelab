@@ -10,16 +10,22 @@
     secrets.yaml
 
   tasks:
-    - name: Create required directories
-      file:
+    - name: Check if directories exist
+      stat:
         path: "{{ item }}"
-        state: directory
-        mode: '0755'
+      register: dir_check
       loop:
         - "{{ wiki_data_path }}"
         - "{{ wiki_data_path }}/db"
-      when: not (item | path_exists)
-
+  
+    - name: Create required directories
+      file:
+        path: "{{ item.item }}"
+        state: directory
+        mode: '0755'
+      loop: "{{ dir_check.results }}"
+      when: not item.stat.exists
+  
     - name: Create proxy network if not present
       containers.podman.podman_network:
         name: proxy
