@@ -1,0 +1,67 @@
+---
+- name: Ubuntu System Configuration and Package Installation
+  hosts: oobe
+  become: true
+  tasks:
+    - name: Allow mgrsys user to use sudo without password
+      lineinfile:
+        path: /etc/sudoers.d/mgrsys
+        line: "mgrsys ALL=(ALL) NOPASSWD: ALL"
+        create: yes
+        mode: '0440'
+        validate: '/usr/sbin/visudo -cf %s'
+
+    - name: Disable SSH Password Authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+        state: present
+      notify: Restart SSH
+
+    - name: Install basic packages with apt
+      apt:
+        name:
+          - ansible
+          - git
+        state: present
+        update_cache: yes
+
+    - name: Add HashiCorp GPG key
+      apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+        state: present
+
+    - name: Add HashiCorp repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+        state: present
+        filename: hashicorp
+
+    - name: Add 1Password GPG key
+      apt_key:
+        url: https://downloads.1password.com/linux/keys/1password.asc
+        state: present
+
+    - name: Add 1Password repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://downloads.1password.com/linux/debian/amd64 stable main"
+        state: present
+        filename: 1password
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Terraform and 1Password CLI
+      apt:
+        name:
+          - terraform
+          - 1password-cli
+        state: present
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted
