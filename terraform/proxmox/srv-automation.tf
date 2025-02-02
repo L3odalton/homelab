@@ -1,8 +1,8 @@
-resource "proxmox_vm_qemu" "srv-test" {
-    name = "srv-test"
+resource "proxmox_vm_qemu" "srv-automation" {
+    name = "srv-automation"
     target_node = "pve-s13-02"
     vmid = "100248"
-    desc = "TF Test"
+    desc = "VM used for running ansible + terraform"
     bios = "ovmf"
     onboot = true
     vm_state = "running"
