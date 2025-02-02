@@ -1,6 +1,6 @@
 ---
 - name: Post-provisioning setup for VM
-  hosts: docker
+  hosts: all
   become: true
 
   tasks:
@@ -55,7 +55,7 @@
     - name: Mount external NFS share
       mount:
         path: /user/data
-        src: unraid.local.darksaber.fyi:/user/data
+        src: unraid.local.darksaber.fyi:/mnt/user/data
         fstype: nfs
         opts: rw,noatime,_netdev,vers=4
         state: mounted
