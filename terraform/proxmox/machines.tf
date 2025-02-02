@@ -53,11 +53,11 @@ resource "proxmox_vm_qemu" "srv-automation" {
     }
 }
 
-resource "proxmox_vm_qemu" "srv-test" {
-    name = "srv-test"
+resource "proxmox_vm_qemu" "srv-docker" {
+    name = "srv-docker"
     target_node = "pve-s13-01"
-    vmid = "100249"
-    desc = "test"
+    vmid = "100240"
+    desc = "docker host"
     bios = "ovmf"
     onboot = true
     vm_state = "running"
@@ -77,7 +77,7 @@ resource "proxmox_vm_qemu" "srv-test" {
     ciupgrade = true
     searchdomain = "local.darksaber.fyi"
     nameserver = "10.0.100.1"
-    ipconfig0 = "ip=10.0.100.249/24,gw=10.0.100.1"
+    ipconfig0 = "ip=10.0.100.240/24,gw=10.0.100.1"
     sshkeys = <<EOF
     ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK43atgPI2XVBwvSM5hGhbeokxgKuetThnThHEJRMiAK
     ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFuOhwlgxLF/4v06qha9jPQ4egOaW2nUFlC7988tPh9X
