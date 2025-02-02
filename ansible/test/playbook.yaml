@@ -1,6 +1,7 @@
 ---
 - name: Test 1Password CLI
   hosts: all
+  become: false
   tasks:
     - name: Try to read secret
       shell: |
