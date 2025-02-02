@@ -1,6 +1,6 @@
 ---
 - name: Install Podman
-  hosts: all
+  hosts: podman
   become: true
   vars:
     podman_user: "{{ ansible_user }}"
