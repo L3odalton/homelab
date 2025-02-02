@@ -48,13 +48,13 @@
 
     - name: Create mount point for NFS share
       file:
-        path: /user/data
+        path: /mnt/data
         state: directory
         mode: '0755'
 
     - name: Mount external NFS share
       mount:
-        path: /user/data
+        path: /mnt/data
         src: unraid.local.darksaber.fyi:/mnt/user/data
         fstype: nfs
         opts: rw,noatime,_netdev,vers=4
