@@ -1,7 +1,11 @@
 ---
 - name: Ubuntu System Configuration and Package Installation
-  hosts: oobe
+  hosts: all
   become: true
+  vars:
+    git_user_name: "Linus Baumann"
+    git_user_email: "keen.key5715@linus-baumann.de"
+
   tasks:
     - name: Allow mgrsys user to use sudo without password
       lineinfile:
@@ -59,6 +63,20 @@
           - terraform
           - 1password-cli
         state: present
+
+    - name: Configure Git global user.name
+      git_config:
+        name: user.name
+        scope: global
+        value: "{{ git_user_name }}"
+      become_user: mgrsys
+
+    - name: Configure Git global user.email
+      git_config:
+        name: user.email
+        scope: global
+        value: "{{ git_user_email }}"
+      become_user: mgrsys
 
   handlers:
     - name: Restart SSH
