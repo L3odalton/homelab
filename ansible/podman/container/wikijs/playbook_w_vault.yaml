@@ -7,7 +7,7 @@
     wiki_version: "2"
     postgres_version: "15-alpine"
   vars_files:
-    secrests.yaml
+    secrets.yaml
 
   tasks:
     - name: Create required directories
@@ -39,7 +39,7 @@
         env:
           POSTGRES_USER: "{{ wikijs.username }}"
           POSTGRES_PASSWORD: "{{ wikijs.password }}"
-          POSTGRES_DB: "{{ wikijs.name }}"
+          POSTGRES_DB: "{{ wikijs.database }}"
         volumes:
           - "{{ wiki_data_path }}/db:/var/lib/postgresql/data:Z"
         network: backend
@@ -56,7 +56,7 @@
           DB_PORT: 5432
           DB_USER: "{{ wikijs.username }}"
           DB_PASS: "{{ wikijs.password }}"
-          DB_NAME: "{{ wikijs.name }}"
+          DB_NAME: "{{ wikijs.database }}"
         ports:
           - "3000:3000"
         network: "backend,proxy"
