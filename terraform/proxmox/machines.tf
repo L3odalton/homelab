@@ -54,7 +54,7 @@ resource "proxmox_vm_qemu" "srv-automation" {
 }
 
 resource "proxmox_vm_qemu" "srv-test" {
-    name = "srv-automation"
+    name = "srv-test"
     target_node = "pve-s13-01"
     vmid = "100249"
     desc = "test"
