@@ -18,6 +18,7 @@
       loop:
         - "{{ wiki_data_path }}"
         - "{{ wiki_data_path }}/db"
+      when: not (item | path_exists)
 
     - name: Create proxy network if not present
       containers.podman.podman_network:
