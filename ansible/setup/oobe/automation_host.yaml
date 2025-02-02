@@ -1,6 +1,6 @@
 ---
 - name: Ubuntu System Configuration and Package Installation
-  hosts: all
+  hosts: oobe
   become: true
   vars:
     git_user_name: "Linus Baumann"
