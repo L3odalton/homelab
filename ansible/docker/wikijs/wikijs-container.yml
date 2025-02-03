@@ -1,0 +1,101 @@
+---
+- name: Deploy Wiki.js with 1Password secrets
+  hosts: docker
+  vars:
+    op_token: "{{ op_token }}"  # Set via -e at runtime
+    repo_url: "https://github.com/L3odalton/homelab.git"
+    temp_dir: "/tmp/wikijs_repo"
+    deploy_dir: "/opt/wikijs"
+    env_tpl_path: "{{ deploy_dir }}/.env.tpl"
+    env_path: "{{ deploy_dir }}/.env"
+    compose_path: "{{ deploy_dir }}/docker-compose.yml"
+
+  tasks:
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - git
+          - docker-compose
+        state: present
+        update_cache: yes
+      become: true
+
+    - name: Ensure the deployment directory exists
+      ansible.builtin.file:
+        path: "{{ deploy_dir }}"
+        state: directory
+        mode: "0755"
+      become: true
+
+    - name: Clone/Update the repository
+      ansible.builtin.git:
+        repo: "{{ repo_url }}"
+        dest: "{{ temp_dir }}"
+        version: main
+        force: yes
+      register: git_clone
+
+    - name: Copy files to deployment directory
+      ansible.builtin.copy:
+        src: "{{ temp_dir }}/{{ item }}"
+        dest: "{{ deploy_dir }}/"
+        remote_src: yes
+      with_items:
+        - docker-compose.yml
+        - .env.tpl
+      become: true
+      when: git_clone.changed
+
+    - name: Clean up temporary directory
+      ansible.builtin.file:
+        path: "{{ temp_dir }}"
+        state: absent
+
+    - name: Set 1Password token in environment
+      ansible.builtin.set_fact:
+        ansible_environment: "{{ ansible_environment | default({}) | combine({'OP_SERVICE_ACCOUNT_TOKEN': op_token}) }}"
+
+    - name: Verify 1Password authentication
+      ansible.builtin.command: op signin --check
+      register: op_auth
+      changed_when: false
+      environment:
+        OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
+
+    - name: Inject secrets into .env file
+      ansible.builtin.command: op inject -i {{ env_tpl_path }} -o {{ env_path }}
+      args:
+        chdir: "{{ deploy_dir }}"
+      changed_when: true
+      environment:
+        OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
+
+    - name: Pull latest container images
+      community.docker.docker_compose:
+        project_src: "{{ deploy_dir }}"
+        pull: yes
+      become: true
+
+    - name: Deploy Wiki.js stack
+      community.docker.docker_compose:
+        project_src: "{{ deploy_dir }}"
+        state: present
+        remove_orphans: yes
+      register: stack_deploy
+      become: true
+
+    - name: Assert database container health
+      community.docker.docker_container_info:
+        name: "wikijs-db"
+      register: db_container_info
+      until: "db_container_info.container.State.Health.Status == 'healthy'"
+      retries: 15
+      delay: 10
+
+    - name: Assert Wiki.js container health
+      community.docker.docker_container_info:
+        name: "wikijs"
+      register: wiki_container_info
+      until: "wiki_container_info.container.State.Health.Status == 'healthy'"
+      retries: 15
+      delay: 10
