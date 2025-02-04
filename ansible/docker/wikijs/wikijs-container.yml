@@ -72,7 +72,7 @@
         OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
 
     - name: Deploy Wiki.js stack
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
         project_src: "{{ deploy_dir }}"
         state: present
         remove_orphans: yes
