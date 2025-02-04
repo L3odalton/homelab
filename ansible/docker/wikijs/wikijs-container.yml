@@ -27,6 +27,11 @@
         mode: "0755"
       become: true
 
+    - name: Ensure docker network exists
+      docker_network:
+        name: "proxy"
+        state: present
+
     - name: Clone/Update the repository
       ansible.builtin.git:
         repo: "{{ repo_url }}"
@@ -59,7 +64,7 @@
       ansible.builtin.command: op user get --me
       register: op_auth
       changed_when: false
-      failed_when: "'State: ACTIVE' not in op_auth.stdout"
+      failed_when: op_auth.stdout is not regex 'State:\s*ACTIVE'
       environment:
         OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
 
