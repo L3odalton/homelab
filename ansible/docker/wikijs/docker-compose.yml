@@ -37,11 +37,11 @@ services:
     ports:
       - "3000:3000"
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/healthz"]
-      interval: 10s
-      timeout: 5s
+      test: curl --fail http://127.0.0.1:3000  || exit 1
+      interval: 60s
       retries: 5
-      start_period: 10s
+      start_period: 60s
+      timeout: 10s
 
 volumes:
   db-data:
