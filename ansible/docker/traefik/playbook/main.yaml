@@ -67,6 +67,19 @@
 
       when: git_status.changed
 
+    - name: check if acme.json exists
+      stat:
+        path: "{{ config_dir }}/acme.json"
+      register: acme_fil
+    - name: Create acme.json with correct permission if it does not exist
+      ansible.builtin.file:
+        path: "{{ config_dir }}/acme.json"
+        state: touch
+        mode: "0600"
+        owner: "mgrsys"
+        group: "mgrsys"
+      when: acme_file.stat.exists == False
+
     - name: Deploy/update and restart docker container
       community.docker.docker_compose_v2:
         project_src: "{{ compose_dir }}"
