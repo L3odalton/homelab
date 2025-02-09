@@ -8,13 +8,16 @@
     config_dir: "{{ compose_dir }}/config"
     repo_dir: "{{ base_dir }}/repo"
     github_repo: "https://github.com/L3odalton/homelab.git"
+    op_env_files:
+      - { tpl: ".env.tpl", dest: ".env" }
+      - { tpl: "cf-token.tpl", dest: "cf-token" }
 
   tasks:
     - name: Ensure service and config directories exist
       file:
         path: "{{ item }}"
         state: directory
-        mode: '0755'
+        mode: "0755"
       loop:
         - "{{ compose_dir }}"
         - "{{ config_dir }}"
@@ -40,23 +43,33 @@
             remote_src: yes
           register: compose_config
 
-        - name: Inject .env file using 1password
-          shell: |
-            op inject -i {{ compose_dir }}/.env.tpl -o {{ compose_dir }}/.env
-            test -f {{ compose_dir }}/.env
-          environment:
-            OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
-          register: env_config
-          no_log: yes
+        - name: Inject environment files using 1password
+          block:
+            - name: Check if {{ item.dest }} needs to be updated
+              stat:
+                path: "{{ compose_dir }}/{{ item.dest }}"
+              register: dest_file
 
-        - name: Inject .cf-token file using 1password
-          shell: |
-            op inject -i {{ compose_dir }}/cf-token.tpl -o {{ compose_dir }}/cf-token
-            test -f {{ compose_dir }}/cf-token
-          environment:
-            OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
-          register: cf_token_config
-          no_log: yes
+            - name: Check if {{ item.tpl }} has been modified
+              stat:
+                path: "{{ compose_dir }}/{{ item.tpl }}"
+              register: tpl_file
+
+            - name: Inject {{ item.dest }} file using 1password
+              shell: |
+                op inject -i {{ compose_dir }}/{{ item.tpl }} -o {{
+                compose_dir }}/{{ item.dest }}
+                test -f {{ compose_dir }}/{{ item.dest }}
+              environment:
+                OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
+              register: op_result
+              no_log: yes
+              when:
+                not dest_file.stat.exists or tpl_file.stat.mtime >
+                dest_file.stat.mtime
+          loop: "{{ op_env_files }}"
+          loop_control:
+            label: "Injecting {{ item.dest }}"
 
         - name: Copy configuration files
           copy:
@@ -64,7 +77,7 @@
             dest: "{{ config_dir }}/"
             remote_src: yes
           register: config_files
-        
+
         - name: Create acme.json with correct permission if it does not exist
           ansible.builtin.file:
             path: "{{ config_dir }}/acme.json"
@@ -85,6 +98,5 @@
       when: >
         git_status.changed or
         compose_config.changed or
-        env_config.changed or
-        cf_token_config.changed or
+        op_result.changed or
         config_files.changed
