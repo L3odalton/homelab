@@ -80,11 +80,8 @@
         files:
           - docker-compose.yml
         state: present
-        pull: "{{ item.pull | default(false) }}"
-        restarted: "{{ item.restarted | default(false) }}"
-      loop:
-        - { pull: true }
-        - { restarted: true }
+        pull: "always"
+        restarted: true
       when: >
         git_status.changed or
         compose_config.changed or
