@@ -27,6 +27,11 @@
         force: yes
       register: git_status
 
+    - name: Ensure docker network exists
+      docker_network:
+        name: "proxy"
+        state: present
+
     - block:
         - name: Copy docker-compose files
           copy:
