@@ -18,6 +18,7 @@ services:
     ports:
       - 80:80/tcp #http
       - 443:443/tcp #https
+      - 127.0.0.1:8080:8080 # http api dashboard
     environment:
       - TRAEFIK_DASHBOARD_CREDENTIALS=${TRAEFIK_DASHBOARD_CREDENTIALS}
       - CF_API_EMAIL=${CF_API_EMAIL}
