@@ -11,92 +11,94 @@
     github_repo: "https://github.com/L3odalton/homelab.git"
     docker_network: proxy
 
-- tasks:
-  - name: Ensure directorys exist
-    file:
-      path: "{{ item }}"
-      state: directory
-      mode: "0755"
-    loop:
-      - "{{ compose_dir }}"
-      - "{{ config_dir }}"
-      - "{{ appdata_dir }}"
-
-  - name: Ensure docker network(s) exist
-    docker_network:
-      name: "{{ item }}"
-      state: present
-    loop:
-      - "{{ docker_network }}"
-
-  - name: Clone/pull latest configuration from GitHub
-    git:
-      repo: "{{ github_repo }}"
-      dest: "{{ repo_dir }}"
-      update: yes
-      force: yes
-    register: git_status
+  tasks:
+    - name: Ensure directorys exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ compose_dir }}"
+        - "{{ config_dir }}"
+        - "{{ appdata_dir }}"
   
-  - block:
-    - name: Copy files using a loop
+    - name: Ensure docker network(s) exist
+      docker_network:
+        name: "{{ item }}"
+        state: present
       loop:
-        - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/", dest: "{{ compose_dir }}/" }
-        - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/config/", dest: "{{ config_dir }}/" }
-      copy:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
+        - "{{ docker_network }}"
+  
+    - name: Clone/pull latest configuration from GitHub
+      git:
+        repo: "{{ github_repo }}"
+        dest: "{{ repo_dir }}"
+        update: yes
+        force: yes
+      register: git_status
+    
+    - block:
+      - name: Copy files using a loop
+        loop:
+          - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/", dest: "{{ compose_dir }}/" }
+          - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/config/", dest: "{{ config_dir }}/" }
+        copy:
+          src: "{{ item.src }}"
+          dest: "{{ item.dest }}"
+        
+      - name: Check if .env exists
+        stat:
+          path: "{{ compose_dir }}/.env"
+        register: env_file
+  
+      - name: Remove env file if exists
+        file:
+          path: "{{ compose_dir }}/.env"
+          state: absent
+        when: env_file.stat.exists == true
+  
+      - name: Check if cf-token file exists
+        stat:
+          path: "{{ compose_dir }}/cf-token"
+          state: absent
+        register: cftoken_file
+  
+      - name: Remove cf-token file if exists
+        file:
+          path: "{{ compose_dir }}/cf-token"
+        when: cftoken_file.stat.exists == true
       
-    - name: Check if .env exists
+      - name: Inject Secrets from 1Password
+        loop:
+          - { input: "{{ compose_dir }}/.env.tpl", output: "{{ compose_dir }}/.env", name: ".env" }
+          - { input: "{{ compose_dir }}/cf-token.tpl", output: "{{ compose_dir }}/cf-token", name: "cf-token" }
+        shell:
+          op inject -i "{{ item.input }}" -o "{{ item.output }}"
+          test -f "{{ item.output }}"
+        environment:
+          OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
+        no_log: yes
+      
+      when: git_status.changed
+  
+    - name: check if acme.json exists
       stat:
-        path: "{{ compose_dir }}/.env"
-      register: env_file
-
-    - name: Remove env file if exists
-      file:
-        path: "{{ compose_dir }}/.env"
-      when: env_file.stat.exists == true
-
-    - name: Check if cf-token file exists
-      stat:
-        path: "{{ compose_dir }}/cf-token"
-      register: cftoken_file
-
-    - name: Remove cf-token file if exists
-      file:
-        path: "{{ compose_dir }}/cf-token"
-      when: cftoken_file.stat.exists == true
-    
-    - name: Inject Secrets from 1Password
-      loop:
-        - { input: "{{ compose_dir }}/.env.tpl", output: "{{ compose_dir }}/.env", name: ".env" }
-        - { input: "{{ compose_dir }}/cf-token.tpl", output: "{{ compose_dir }}/cf-token", name: "cf-token" }
-      shell:
-        op inject -i "{{ item.input }}" -o "{{ item.output }}"
-        test -f "{{ item.output }}"
-      environment:
-        OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
-      no_log: yes
-    
-    when: git_status.changed
-
-  - name: check if acme.json exists
-    stat:
-      path: "{{ config_dir }}/acme.json"
-    register: acme_fil
-  - name: Create acme.json with correct permission if it does not exist
-    ansible.builtin.file:
-      path: "{{ config_dir }}/acme.json"
-      state: touch
-      mode: "0600"
-      owner: "mgrsys"
-      group: "mgrsys"
-    when: acme_file.stat.exists == False
-
-  - name: Deploy/update and restart docker container
-    community.docker.docker_compose_v2:
-      project_src: "{{ compose_dir }}"
-      files:
-        - docker-compose.yml
-      state: present
-      pull: policy
-      recreate: always
+        path: "{{ config_dir }}/acme.json"
+      register: acme_file
+    - name: Create acme.json with correct permission if it does not exist
+      ansible.builtin.file:
+        path: "{{ config_dir }}/acme.json"
+        state: touch
+        mode: "0600"
+        owner: "mgrsys"
+        group: "mgrsys"
+      when: acme_file.stat.exists == False
+  
+    - name: Deploy/update and restart docker container
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        files:
+          - docker-compose.yml
+        state: present
+        pull: policy
+        recreate: always
