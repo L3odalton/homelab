@@ -47,8 +47,8 @@
 
         - name: Inject .cf-token file using 1password
           shell: |
-            op inject -i {{ compose_dir }}/.cf-token.tpl -o {{ compose_dir }}/.cf-token
-            test -f {{ compose_dir }}/.cf-token
+            op inject -i {{ compose_dir }}/cf-token.tpl -o {{ compose_dir }}/cf-token
+            test -f {{ compose_dir }}/cf-token
           environment:
             OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
           register: cf_token_config
