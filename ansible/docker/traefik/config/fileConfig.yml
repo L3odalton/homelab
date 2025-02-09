@@ -9,6 +9,14 @@ http:
       service: unraid
       middlewares:
         - "local-ipwhitelist@file"
+    dns-01:
+      entryPoints:
+        - https
+        - http
+      rule: 'Host(`dns-01.darksaber.fyi`)'
+      service: dns-01
+      middlewares:
+        - "local-ipwhitelist@file"
 
   services:
     unraid:
@@ -16,6 +24,11 @@ http:
         serversTransport: insecureTransport
         servers:
           - url: http://10.0.100.2
+    dns-01:
+      loadBalancer:
+        serversTransport: insecureTransport
+        servers:
+          - url: http://10.0.100.253:5380
 
   # allow self-signed certificates for proxied web services
   serversTransports:
