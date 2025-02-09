@@ -1,7 +1,6 @@
 ---
 - name: Deploy and update Traefik
   hosts: docker
-  become: yes
   vars:
     service_name: traefik
     base_dir: "/home/mgrsys/docker"
