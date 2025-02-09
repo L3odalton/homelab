@@ -48,19 +48,20 @@
       
     - name: Check and remove files if they exist
       loop:
-        - { path: "{{ compose_dir }}/.env", register: "env_file" }
-        - { path: "{{ compose_dir }}/cf-token", register: "cf_token_file" }
+        - { path: "{{ compose_dir }}/.env" }
+        - { path: "{{ compose_dir }}/cf-token" }
       block:
         - name: Check if file exists
           stat:
             path: "{{ item.path }}"
-          register: "{{ item.register }}"
-
+          register: file_stat
+    
         - name: Remove file if it exists
           file:
             path: "{{ item.path }}"
             state: absent
-          when: "{{ lookup('vars', item.register).stat.exists | bool }}"
+          when: file_stat.stat.exists | bool
+          register: file_removal_result  # Capture the result of the file removal
     
     - name: Inject Secrets from 1Password
       loop:
