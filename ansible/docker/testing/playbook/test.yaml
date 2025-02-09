@@ -1,5 +1,5 @@
 ---
-- name: Test Playbook
+- name: Boilerplate
   hosts: docker
   vars:
     service_name: testing
@@ -10,6 +10,7 @@
     repo_dir: "/home/mgrsys/tmp"
     github_repo: "https://github.com/L3odalton/homelab.git"
     docker_network: proxy
+    op_token: "{{ lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN') }}"
 
   tasks:
     - name: Ensure directories exist
@@ -24,10 +25,8 @@
 
     - name: Ensure docker network(s) exist
       docker_network:
-        name: "{{ item }}"
+        name: "{{ docker_network }}"
         state: present
-      loop:
-        - "{{ docker_network }}"
 
     - name: Clone/pull latest configuration from GitHub
       git:
@@ -39,76 +38,35 @@
 
     - block:
         - name: Copy files using a loop
-          loop:
-            - {
-              src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/",
-              dest: "{{ compose_dir }}/",
-            }
-            - {
-              src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/config/",
-              dest: "{{ config_dir }}/",
-            }
           copy:
             src: "{{ item.src }}"
             dest: "{{ item.dest }}"
             remote_src: yes
+          loop:
+            - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/", dest: "{{ compose_dir }}/" }
+            - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/config/", dest: "{{ config_dir }}/" }
 
-        - name: Check if .env exists
-          stat:
-            path: "{{ compose_dir }}/.env"
-          register: env_file
-
-        - name: Remove env file if exists
+        - name: Remove existing .env and cf-token files
           file:
-            path: "{{ compose_dir }}/.env"
-            state: absent # Use absent to remove the file
-          when: env_file.stat.exists == true
-
-        - name: Check if cf-token file exists
-          stat:
-            path: "{{ compose_dir }}/cf-token"
-          register: cftoken_file
-
-        - name: Remove cf-token file if exists
-          file:
-            path: "{{ compose_dir }}/cf-token"
-            state: absent # Use absent to remove the file
-          when: cftoken_file.stat.exists == true
+            path: "{{ compose_dir }}/{{ item }}"
+            state: absent
+          loop:
+            - ".env"
+            - "cf-token"
+          ignore_errors: yes
 
         - name: Inject Secrets from 1Password
-          loop:
-            - {
-              input: "{{ compose_dir }}/.env.tpl",
-              output: "{{ compose_dir }}/.env",
-              name: ".env",
-            }
-            - {
-              input: "{{ compose_dir }}/cf-token.tpl",
-              output: "{{ compose_dir }}/cf-token",
-              name: "cf-token",
-            }
           shell: |
             op inject -i "{{ item.input }}" -o "{{ item.output }}"
             test -f "{{ item.output }}"
+          loop:
+            - { input: "{{ compose_dir }}/.env.tpl", output: "{{ compose_dir }}/.env", name: ".env" }
+            - { input: "{{ compose_dir }}/cf-token.tpl", output: "{{ compose_dir }}/cf-token", name: "cf-token" }
           environment:
             OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
           no_log: yes
 
       when: git_status.changed
-
-    - name: check if acme.json exists
-      stat:
-        path: "{{ config_dir }}/acme.json"
-      register: acme_file # Corrected variable name
-
-    - name: Create acme.json with correct permission if it does not exist
-      ansible.builtin.file:
-        path: "{{ config_dir }}/acme.json"
-        state: touch
-        mode: "0600"
-        owner: "mgrsys"
-        group: "mgrsys"
-      when: acme_file.stat.exists == False
 
     - name: Deploy/update and restart docker container
       community.docker.docker_compose_v2:
