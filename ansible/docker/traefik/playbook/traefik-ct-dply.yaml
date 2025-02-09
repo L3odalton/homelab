@@ -81,7 +81,7 @@
           - docker-compose.yml
         state: present
         pull: "always"
-        restarted: true
+        recreate: true
       when: >
         git_status.changed or
         compose_config.changed or
