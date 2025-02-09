@@ -35,6 +35,15 @@ http:
         - https-redirectscheme
       tls: {}
       service: dns-01
+    dns-02:
+      entryPoints:
+        - "https"
+      rule: "Host(`dns-02.darksaber.fyi`)"
+      middlewares:
+        - default-security-headers
+        - https-redirectscheme
+      tls: {}
+      service: dns-02
 
   services:
     unraid:
@@ -46,4 +55,9 @@ http:
       loadBalancer:
         servers:
           - url: "http://10.0.100.253:5380"
+        passHostHeader: true
+    dns-02:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.100.254:5380"
         passHostHeader: true
