@@ -90,9 +90,11 @@
         - name: Create acme.json with correct permission if it does not exist
           ansible.builtin.file:
             path: "{{ config_dir }}/acme.json"
-            state: touch
+            state: file
             mode: "0600"
-            force: no
+            owner: " {{ ansible_user_id }}"
+            group: " {{ ansible_user_id }}"
+            create: yes
 
       when: git_status.changed
 
