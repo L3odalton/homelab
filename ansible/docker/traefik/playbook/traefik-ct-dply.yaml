@@ -4,7 +4,7 @@
   become: yes
   vars:
     service_name: traefik
-    base_dir: "~/docker"
+    base_dir: "/home/mgrsys/docker"
     compose_dir: "{{ base_dir }}/{{ service_name }}"
     config_dir: "{{ compose_dir }}/config"
     repo_dir: "{{ base_dir }}/repo"
