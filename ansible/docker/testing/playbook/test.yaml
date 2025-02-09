@@ -50,21 +50,21 @@
       stat:
         path: "{{ compose_dir }}/.env"
       register: env_file
-    
+
     - name: Remove env file if exists
       file:
         path: "{{ compose_dir }}/.env"
       when: env_file.stat.exists == true
-    
+
     - name: Check if cf-token file exists
       stat:
         path: "{{ compose_dir }}/cf-token"
-      register: cf-token_file
-    
+      register: cftoken_file
+
     - name: Remove cf-token file if exists
       file:
         path: "{{ compose_dir }}/cf-token"
-      when: cf-token_file.stat.exists == true
+      when: cftoken_file.stat.exists == true
     
     - name: Inject Secrets from 1Password
       loop:
