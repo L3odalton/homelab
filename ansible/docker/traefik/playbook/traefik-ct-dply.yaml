@@ -92,8 +92,8 @@
             path: "{{ config_dir }}/acme.json"
             state: file
             mode: "0600"
-            owner: " {{ ansible_user_id }}"
-            group: " {{ ansible_user_id }}"
+            owner: "mgrsys"
+            group: "mgrsys"
             create: yes
 
       when: git_status.changed
