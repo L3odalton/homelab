@@ -44,6 +44,9 @@
           register: compose_config
 
         - name: Inject environment files using 1password
+          loop: "{{ op_env_files }}"
+          loop_control:
+            label: "Injecting {{ item.dest }}"
           block:
             - name: Check if {{ item.dest }} needs to be updated
               stat:
@@ -67,9 +70,6 @@
               when:
                 not dest_file.stat.exists or tpl_file.stat.mtime >
                 dest_file.stat.mtime
-          loop: "{{ op_env_files }}"
-          loop_control:
-            label: "Injecting {{ item.dest }}"
 
         - name: Copy configuration files
           copy:
