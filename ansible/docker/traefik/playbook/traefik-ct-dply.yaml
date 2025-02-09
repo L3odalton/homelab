@@ -69,20 +69,20 @@
 
       when: git_status.changed
 
-#     - name: Deploy/update and restart container if configs changed
-#       community.docker.docker_compose_v2:
-#         project_src: "{{ compose_dir }}"
-#         files:
-#           - docker-compose.yml
-#         state: present
-#         pull: "{{ item.pull | default(no) }}"
-#         restarted: "{{ item.restarted | default(no) }}"
-#       loop:
-#         - { pull: yes }
-#         - { restarted: yes }
-#       when: >
-#         git_status.changed or
-#         compose_config.changed or
-#         env_config.changed or
-#         cf_token_config.changed or
-#         config_files.changed
+    - name: Deploy/update and restart container if configs changed
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        files:
+          - docker-compose.yml
+        state: present
+        pull: "{{ item.pull | default(no) }}"
+        restarted: "{{ item.restarted | default(no) }}"
+      loop:
+        - { pull: yes }
+        - { restarted: yes }
+      when: >
+        git_status.changed or
+        compose_config.changed or
+        env_config.changed or
+        cf_token_config.changed or
+        config_files.changed
