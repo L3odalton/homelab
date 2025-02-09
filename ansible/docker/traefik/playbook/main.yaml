@@ -27,6 +27,12 @@
         name: "{{ docker_network }}"
         state: present
 
+    - name: Ensure logrotate is installed
+      package:
+        name: logrotate
+        state: present
+      become: true
+
     - name: Clone/pull latest configuration from GitHub
       git:
         repo: "{{ github_repo }}"
@@ -80,6 +86,26 @@
         owner: "mgrsys"
         group: "mgrsys"
       when: acme_file.stat.exists == False
+
+    - name: Ensure logrotate configuration for Traefik
+      copy:
+        dest: /etc/logrotate.d/traefik
+        content: |
+          compress
+          /home/mgrsys/traefik/logs/*.log {
+            size 20M
+            daily
+            rotate 14
+            missingok
+            notifempty
+            postrotate
+              docker kill --signal="USR1" traefik
+            endscript
+          }
+        owner: root
+        group: root
+        mode: '0644'
+      become: true
 
     - name: Deploy/update and restart docker container
       community.docker.docker_compose_v2:
