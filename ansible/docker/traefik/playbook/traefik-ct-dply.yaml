@@ -1,0 +1,89 @@
+---
+- name: Deploy and update Traefik
+  hosts: docker
+  become: yes
+  vars:
+    service_name: traefik
+    base_dir: "~/docker"
+    compose_dir: "{{ base_dir }}/{{ service_name }}"
+    config_dir: "{{ compose_dir }}/config"
+    repo_dir: "{{ base_dir }}/repo"
+    github_repo: "https://github.com/L3odalton/homelab.git"
+
+  tasks:
+    - name: Ensure service and config directories exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ compose_dir }}"
+        - "{{ config_dir }}"
+
+    - name: Clone/pull latest configuration from GitHub
+      git:
+        repo: "{{ github_repo }}"
+        dest: "{{ repo_dir }}"
+        update: yes
+        force: yes
+      register: git_status
+
+    - block:
+        - name: Copy docker-compose files
+          copy:
+            src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/"
+            dest: "{{ compose_dir }}/"
+            remote_src: yes
+          register: compose_config
+
+        - name: Inject .env file using 1password
+          shell: |
+            op inject -i {{ compose_dir }}/.env.tpl -o {{ compose_dir }}/.env
+            test -f {{ compose_dir }}/.env
+          environment:
+            OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
+          register: env_config
+          no_log: yes
+
+        - name: Inject .cf-token file using 1password
+          shell: |
+            op inject -i {{ compose_dir }}/.cf-token.tpl -o {{ compose_dir }}/.cf-token
+            test -f {{ compose_dir }}/.cf-token
+          environment:
+            OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
+          register: cf_token_config
+          no_log: yes
+
+        - name: Copy configuration files
+          copy:
+            src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/config/"
+            dest: "{{ config_dir }}/"
+            remote_src: yes
+          register: config_files
+        
+        - name: Create acme.json with correct permission if it does not exist
+          ansible.builtin.file:
+            path: "{{ config_dir }}/acme.json"
+            state: touch
+            mode: "0600"
+            force: no
+
+      when: git_status.changed
+
+#     - name: Deploy/update and restart container if configs changed
+#       community.docker.docker_compose_v2:
+#         project_src: "{{ compose_dir }}"
+#         files:
+#           - docker-compose.yml
+#         state: present
+#         pull: "{{ item.pull | default(no) }}"
+#         restarted: "{{ item.restarted | default(no) }}"
+#       loop:
+#         - { pull: yes }
+#         - { restarted: yes }
+#       when: >
+#         git_status.changed or
+#         compose_config.changed or
+#         env_config.changed or
+#         cf_token_config.changed or
+#         config_files.changed
