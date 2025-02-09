@@ -2,7 +2,7 @@
 - name: Test Playbook
   hosts: docker
   vars:
-    service_name: test
+    service_name: testing
     base_dir: "/home/mgrsys/docker/{{ service_name }}"
     compose_dir: "{{ base_dir }}/compose"
     config_dir: "{{ base_dir }}/config"
