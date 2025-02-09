@@ -19,7 +19,7 @@ http:
         permanent: true
 
   routers:
-    portainer:
+    unraid:
       entryPoints:
         - "https"
       rule: "Host(`unraid.darksaber.fyi`)"
@@ -27,11 +27,25 @@ http:
         - default-security-headers
         - https-redirectscheme
       tls: {}
-      service: portainer
+      service: unraid
+    dns-01:
+      entryPoints:
+        - "https"
+      rule: "Host(`dns-01.darksaber.fyi`)"
+      middlewares:
+        - default-security-headers
+        - https-redirectscheme
+      tls: {}
+      service: dns-01
 
   services:
-    portainer:
+    unraid:
       loadBalancer:
         servers:
-          - url: "https://10.0.100.2"
+          - url: "http://10.0.100.2"
+        passHostHeader: true
+    dns-01:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.100.253:5380"
         passHostHeader: true
