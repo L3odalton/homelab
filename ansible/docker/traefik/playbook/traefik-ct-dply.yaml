@@ -80,8 +80,8 @@
         files:
           - docker-compose.yml
         state: present
-        pull: "always"
-        recreate: true
+        pull: always
+        recreate: always
       when: >
         git_status.changed or
         compose_config.changed or
