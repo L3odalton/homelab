@@ -28,7 +28,7 @@ http:
       loadBalancer:
         serversTransport: insecureTransport
         servers:
-          - url: http://10.0.100.253:5380
+          - url: http://technitium-01.local.darksaber.fyi:5380/
 
   # allow self-signed certificates for proxied web services
   serversTransports:
