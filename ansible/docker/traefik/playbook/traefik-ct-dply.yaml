@@ -112,7 +112,6 @@
         pull: always
         recreate: always
       when: >
-        git_status.changed or
         compose_config.changed or
         env_config.changed or
         cf_token_config.changed or
