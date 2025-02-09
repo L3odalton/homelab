@@ -1,8 +1,8 @@
 ---
-- name: Boilerplate
+- name: Deploy and update traefik
   hosts: docker
   vars:
-    service_name: testing
+    service_name: traefik
     base_dir: "/home/mgrsys/docker/{{ service_name }}"
     compose_dir: "{{ base_dir }}/compose"
     config_dir: "{{ base_dir }}/config"
