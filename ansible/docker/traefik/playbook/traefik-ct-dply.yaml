@@ -87,6 +87,11 @@
             remote_src: yes
           register: config_files
 
+        - name: check if acme.json exists
+          stat:
+            path: "{{ config_dir }}/acme.json"
+          register: acme_file
+
         - name: Create acme.json with correct permission if it does not exist
           ansible.builtin.file:
             path: "{{ config_dir }}/acme.json"
@@ -94,6 +99,7 @@
             mode: "0600"
             owner: "mgrsys"
             group: "mgrsys"
+          when: acme_file.stat.exists == False
 
       when: git_status.changed
 
