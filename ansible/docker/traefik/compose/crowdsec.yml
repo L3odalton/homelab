@@ -10,6 +10,7 @@ services:
     image: crowdsecurity/crowdsec:latest
     networks:
       - backend
+      - proxy
     restart: unless-stopped
     security_opt:
       - no-new-privileges=true
