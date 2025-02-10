@@ -80,7 +80,7 @@
       
     - name: Create acme.json with correct permission if it does not exist
       ansible.builtin.file:
-        path: "{{ config_dir }}/acme.json"
+        path: "{{ config_dir }}/certs/acme.json"
         state: touch
         mode: "0600"
         owner: "mgrsys"
@@ -92,7 +92,7 @@
         dest: /etc/logrotate.d/traefik
         content: |
           compress
-          /home/mgrsys/traefik/logs/*.log {
+          /var/log/traefik/logs/*.log {
             size 20M
             daily
             rotate 14

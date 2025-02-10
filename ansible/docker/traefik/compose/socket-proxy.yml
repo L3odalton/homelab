@@ -1,0 +1,42 @@
+services:
+  socket-proxy:
+    container_name: socket-proxy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -o /dev/null -w '%{http_code}' http://localhost:2375 | grep -q '403' || exit 1"]
+      timeout: 1s
+      interval: 10s
+      retries: 3
+      start_period: 10s
+    image: lscr.io/linuxserver/socket-proxy:latest
+    networks:
+      - backend
+    read_only: true
+    restart: unless-stopped
+    tmpfs:
+      - /run
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - INFO=1
+      - CONTAINERS=1
+      - POST=0
+      - BUILD=0
+      - COMMIT=0
+      - CONFIGS=0
+      - DISTRIBUTION=0
+      - EXEC=0
+      - GRPC=0
+      - IMAGES=0
+      - NETWORKS=0
+      - NODES=0
+      - PLUGINS=0
+      - SERVICES=0
+      - SESSION=0
+      - SWARM=0
+      - SYSTEM=0
+      - TASKS=0
+      - VOLUMES=0
+
+networks:
+  backend:
+    internal: true

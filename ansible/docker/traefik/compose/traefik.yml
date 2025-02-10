@@ -1,0 +1,54 @@
+secrets:
+  cf-token:
+    file: ./cf-token
+
+services:
+  traefik:
+    container_name: traefik
+    depends_on:
+      crowdsec:
+        condition: service_healthy
+      socket-proxy:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      timeout: 1s
+      interval: 10s
+      retries: 3
+      start_period: 10s
+    image: traefik:latest
+    environment:
+      - TRAEFIK_DASHBOARD_CREDENTIALS=${TRAEFIK_DASHBOARD_CREDENTIALS}
+      - CF_API_EMAIL=${CF_API_EMAIL}
+      - CF_DNS_API_TOKEN_FILE=/run/secrets/cf-token
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.traefik-dashboad.rule: HOST(`traefik.yourdomain.com`)
+      traefik.http.routers.traefik-dashboad.service: api@internal
+      traefik.http.routers.pingweb.rule: PathPrefix(`/ping`)
+      traefik.http.routers.pingweb.service: ping@internal
+      traefik.http.routers.pingweb.entrypoints: https
+      traefik.http.middlewares.basic-auth-global.basicauth.users: ${TRAEFIK_DASHBOARD_CREDENTIALS}"
+    networks:
+      - backend
+      - proxy
+    ports:
+      - 80:80/tcp
+      - 443:443/tcp
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    secrets:
+      - cf-token
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /home/mgrsys/docker/traefik/config/traefik.yml:/etc/traefik/traefik.yml
+      - /home/mgrsys/docker/traefik/config/certs/acme.json:/etc/traefik/acme.json
+      - /home/mgrsys/docker/traefik/config/dynamic_conf:/etc/traefik/dynamic_conf:ro
+      - /var/log/traefik/:/var/log/traefik/
+
+networks:
+  backend:
+    internal: true
+  proxy:
+    external: true

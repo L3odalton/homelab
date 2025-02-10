@@ -1,0 +1,31 @@
+services:
+  crowdsec:
+    container_name: crowdsec
+    healthcheck:
+      test: ["CMD", "cscli", "version"]
+      timeout: 2s
+      interval: 20s
+      retries: 5
+      start_period: 10s
+    image: crowdsecurity/crowdsec:latest
+    networks:
+      - backend
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges=true
+    volumes:
+      - /home/mgrsys/docker/traefik/crowdsec/config:/etc/crowdsec
+      - /home/mgrsys/docker/traefik/crowdsec/data:/var/lib/crowdsec/data
+      - /var/log/auth.log:/var/log/auth.log:ro
+      - /var/log/traefik:/var/log/traefik:ro
+    environment:
+      - TZ=Europe/Berlin
+      - DOCKER_HOST=tcp://socket-proxy:2375
+      - BOUNCER_KEY_TRAEFIK=${BOUNCER_KEY_TRAEFIK}
+      - BOUNCER_KEY_FIREWALL={BOUNCER_KEY_FIREWALL}
+      - NO_HUB_UPGRADE="false"
+      - COLLECTIONS="crowdsecurity/linux crowdsecurity/traefik"
+
+networks:
+  backend:
+    internal: true

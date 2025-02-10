@@ -1,0 +1,19 @@
+services:
+  traefik_crowdsec_bouncer:
+    container_name: traefik-crowdsec-bouncer
+    depends_on:
+      crowdsec:
+        condition: service_healthy
+    image: fbonalair/traefik-crowdsec-bouncer:latest
+    networks:
+      - backend
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Berlin
+      - GIN_MODE="debug"
+      - CROWDSEC_BOUNCER_API_KEY=${BOUNCER_KEY_TRAEFIK}
+      - CROWDSEC_AGENT_HOST=crowdsec:8080
+
+networks:
+  backend:
+    internal: true
