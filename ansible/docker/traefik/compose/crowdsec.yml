@@ -29,3 +29,5 @@ services:
 networks:
   backend:
     internal: true
+  proxy:
+    external: true
