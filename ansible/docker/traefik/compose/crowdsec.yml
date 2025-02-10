@@ -25,7 +25,7 @@ services:
       - BOUNCER_KEY_TRAEFIK=${BOUNCER_KEY_TRAEFIK}
       - BOUNCER_KEY_FIREWALL={BOUNCER_KEY_FIREWALL}
       - NO_HUB_UPGRADE="false"
-      - COLLECTIONS="crowdsecurity/linux crowdsecurity/traefik"
+      - COLLECTIONS=crowdsecurity/linux crowdsecurity/traefik
 
 networks:
   backend:
