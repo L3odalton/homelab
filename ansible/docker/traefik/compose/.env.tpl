@@ -1,4 +1,4 @@
-COMPOSE_PROJECT_NAME=Traefik
+COMPOSE_PROJECT_NAME=traefik
 BOUNCER_KEY_TRAEFIK=op://secrets/traefik/env/bouncerkeytraefik
 BOUNCER_KEY_FIREWALL=op://secrets/traefik/env/bouncerkeyfirewall
 TRAEFIK_DASHBOARD_CREDENTIALS=op://secrets/traefik/env/dashboardcreds
