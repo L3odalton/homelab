@@ -3,6 +3,8 @@ services:
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
+    networks:
+      - proxy
     environment:
       - LOG_LEVEL=info
       - TZ=Europe/Berlin
