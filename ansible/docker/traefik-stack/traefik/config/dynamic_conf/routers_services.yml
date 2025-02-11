@@ -48,6 +48,18 @@ http:
       tls:
         options: default
       service: sab
+    dns-01:
+      entryPoints:
+        - "https"
+      rule: "Host(`dns-01.darksaber.fyi`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+        - gzip
+        - default-whitelist
+      tls:
+        options: default
+      service: dns-01
 
 
   services:
@@ -70,4 +82,9 @@ http:
       loadBalancer:
         servers:
           - url: "http://srv-docker.local.darksaber.fyi:8080"
+        passHostHeader: true
+    dns-01:
+      loadBalancer:
+        servers:
+          - url: "http://technitium-01.local.darksaber.fyi:8080"
         passHostHeader: true
