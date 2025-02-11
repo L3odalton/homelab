@@ -56,14 +56,14 @@ services:
       traefik.http.routers.prowlarr.tls: "True"
     restart: unless-stopped
 
-#   umlautadaptarr:
-#     image: pcjones/umlautadaptarr:latest
-#     container_name: umlautadaptarr
-#     environment:
-#       - TZ=Europe/Berlin
-#       - SONARR__ENABLED_true
-#       - SONARR__HOST=http://sonarr:8989
-#       - SONARR__APIKEY=${SONARR_APIKEY}
+  umlautadaptarr:
+    image: pcjones/umlautadaptarr:latest
+    container_name: umlautadaptarr
+    environment:
+      - TZ=Europe/Berlin
+      - SONARR__ENABLED_true
+      - SONARR__HOST=http://sonarr:8989
+      - SONARR__APIKEY=${SONARR_APIKEY}
 
   sonarr:
     image: ghcr.io/hotio/sonarr
