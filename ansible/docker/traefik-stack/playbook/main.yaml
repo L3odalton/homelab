@@ -77,12 +77,12 @@
 
     - name: check if acme.json exists
       stat:
-        path: "{{ config_dir }}/acme.json"
+        path: "{{ certs_dir }}/acme.json"
       register: acme_file
       
     - name: Create acme.json with correct permission if it does not exist
       ansible.builtin.file:
-        path: "{{ config_dir }}/certs/acme.json"
+        path: "{{ certs_dir }}/certs/acme.json"
         state: touch
         mode: "0600"
         owner: "mgrsys"
