@@ -1,0 +1,24 @@
+---
+services:
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=info
+      - TZ=Europe/Berlin
+    ports:
+      - 5055:5055
+    volumes:
+      - /home/mgrsys/docker/jellyseerr/config:/app/config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyseerr.rule=Host(`request.darksaber.fyi`)"
+      - "traefik.http.routers.jellyseerr.entrypoints=https"
+      - "traefik.http.routers.jellyseerr.tls=true"
+      - "traefik.http.services.jellyseerr.loadbalancer.server.port=5055"
+      - "traefik.docker.network=proxy"
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: true
