@@ -40,6 +40,8 @@ services:
       - TZ=Europe/Berlin
     volumes:
       - /home/mgrsys/docker/arr-stack/prowlarr/config:/config
+    ports:
+      - 9696:9696
     networks:
       - proxy
     labels:
@@ -50,7 +52,7 @@ services:
       traefik.http.routers.prowlarr.rule: "Host(`prowlarr.darksaber.fyi`)"
       traefik.http.routers.prowlarr.service: prowlarr
       traefik.http.routers.prowlarr.tls: "True"
-      
+
 networks:
   proxy:
     external: true
