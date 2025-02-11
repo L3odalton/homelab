@@ -41,7 +41,6 @@
             remote_src: yes
           loop:
             - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/", dest: "{{ compose_dir }}/" }
-#             - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/sabnzbd/", dest: "{{ sabnzbd_dir }}/" }
 
         - name: Remove existing .env
           file:
@@ -71,3 +70,27 @@
         state: present
         pull: policy
         recreate: always
+
+    - name: Read current host_whitelist line
+      ansible.builtin.shell: grep '^host_whitelist' /home/mgrsys/docker/arr-stack/sabnzbd/config/sabnzbd.ini || echo "host_whitelist = "
+      register: current_whitelist
+      changed_when: false
+
+    - name: Set fact for existing whitelist
+      ansible.builtin.set_fact:
+        existing_whitelist: "{{ current_whitelist.stdout | regex_replace('^host_whitelist\\s*=\\s*', '') }}"
+
+    - name: Update host_whitelist if domains are missing
+      ansible.builtin.lineinfile:
+        path: /home/mgrsys/docker/arr-stack/sabnzbd/config/sabnzbd.ini
+        regexp: '^host_whitelist\s*='
+        line: "host_whitelist = {{ existing_whitelist }}{{ ',' if existing_whitelist else '' }}srv-docker.local.darksaber.fyi,sab.darksaber.fyi"
+        backrefs: yes
+      register: config_update
+      when: not current_whitelist.stdout is search('srv-docker.local.darksaber.fyi')
+
+    - name: Restart sabnzbd container
+      community.docker.docker_container:
+        name: sabnzbd
+        restart: true
+      when: config_update.changed
