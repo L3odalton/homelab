@@ -23,9 +23,9 @@ services:
       - PGID=1000
       - TZ=Europe/Berlin
     volumes:
-      - /home/mgrsys/docker/arr-stack/config/sabnzbd:/config
-      - /mnt/data/usenet/complete:/downloads
-      - /mnt/data/usenet/incomplete:/incomplete-downloads
+      - /home/mgrsys/docker/arr-stack/sabnzbd/config:/config
+      - /mnt/data/usenet/complete:/data/usenet/complete
+      - /mnt/data/usenet/incomplete:/data/usenet/incomplete
     network_mode: "service:gluetun"
     restart: unless-stopped
   
