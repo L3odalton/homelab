@@ -15,6 +15,7 @@ services:
     ports:
       - 8080:8080 #Sab
     restart: unless-stopped
+
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
@@ -30,6 +31,7 @@ services:
       - /mnt/data/usenet/incomplete:/data/usenet/incomplete
     network_mode: "service:gluetun"
     restart: unless-stopped
+
   prowlarr:
     image: ghcr.io/hotio/prowlarr
     container_name: prowlarr
@@ -52,6 +54,13 @@ services:
       traefik.http.routers.prowlarr.rule: "Host(`prowlarr.darksaber.fyi`)"
       traefik.http.routers.prowlarr.service: prowlarr
       traefik.http.routers.prowlarr.tls: "True"
+    restart: unless-stopped
+
+  umlautadaptarr:
+    image: pcjones/umlautadaptarr:latest
+    container_name: umlautadaptarr
+    environment:
+      - TZ=Europe/Berlin
 
 networks:
   proxy:
