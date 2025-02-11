@@ -11,6 +11,9 @@ services:
       - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
       - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
       - SERVER_CITIES=${SERVER_CITIES}
+    ports:
+      - 8080:8080 #Sab
+    restart: unless-stopped
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
@@ -23,7 +26,5 @@ services:
       - /mnt/data/usenet/complete:/downloads
       - /mnt/data/usenet/incomplete:/incomplete-downloads
     network_mode: "service:gluetun"
-    ports:
-      - 8080:8080
     restart: unless-stopped
   
