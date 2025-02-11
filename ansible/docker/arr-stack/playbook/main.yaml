@@ -9,7 +9,7 @@
     sabnzbd_bu_dir: "{{ sabnzbd_dir }}/backup"
     sabnzbd_logs_dir: "{{ sabnzbd_dir }}/logs"
     prowlarr_dir: "{{ base_dir }}/prowlarr"
-    sonarr_dir: "{{ sonarr_dir }}"
+    sonarr_dir: "{{ base_dir }}/sonarr"
     repo_dir: "/home/mgrsys/tmp"
     github_repo: "https://github.com/L3odalton/homelab.git"
     docker_network: proxy
