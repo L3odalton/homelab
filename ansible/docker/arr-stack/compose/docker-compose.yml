@@ -24,8 +24,8 @@ services:
       - TZ=Europe/Berlin
     volumes:
       - /home/mgrsys/docker/arr-stack/sabnzbd/config:/config
-      - /mnt/data/usenet/complete:/downloads
-      - /mnt/data/usenet/incomplete:/incomplete-downloads
+      - /mnt/data/usenet/complete:/data/usenet/complete
+      - /mnt/data/usenet/incomplete:/data/usenet/incomplete
     network_mode: "service:gluetun"
     restart: unless-stopped
   

@@ -87,7 +87,7 @@
       file:
         path: /mnt/data
         state: directory
-        mode: '0755'
+        mode: '0755'      
 
     - name: Mount external NFS share
       mount:
