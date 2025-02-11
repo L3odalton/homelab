@@ -56,11 +56,37 @@ services:
       traefik.http.routers.prowlarr.tls: "True"
     restart: unless-stopped
 
-  umlautadaptarr:
-    image: pcjones/umlautadaptarr:latest
-    container_name: umlautadaptarr
+#   umlautadaptarr:
+#     image: pcjones/umlautadaptarr:latest
+#     container_name: umlautadaptarr
+#     environment:
+#       - TZ=Europe/Berlin
+#       - SONARR__ENABLED_true
+#       - SONARR__HOST=http://sonarr:8989
+#       - SONARR__APIKEY=${SONARR_APIKEY}
+
+  sonarr:
+    image: ghcr.io/hotio/sonarr
+    container_name: sonarr
+    ports:
+      - 8989:8989
     environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
       - TZ=Europe/Berlin
+    volumes:
+      - /home/mgrsys/docker/arr-stack/sonarr/config:/config
+      - /mnt/data:/data
+    labels:
+      traefik.docker.network: proxy
+      traefik.enable: "true"
+      traefik.http.services.prowlarr.loadbalancer.server.port: "9696"
+      traefik.http.routers.prowlarr.entrypoints: https
+      traefik.http.routers.prowlarr.rule: "Host(`prowlarr.darksaber.fyi`)"
+      traefik.http.routers.prowlarr.service: prowlarr
+      traefik.http.routers.prowlarr.tls: "True"
+    restart: unless-stopped
 
 networks:
   proxy:
