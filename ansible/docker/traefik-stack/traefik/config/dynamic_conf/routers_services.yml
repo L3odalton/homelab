@@ -81,7 +81,7 @@ http:
     sab:
       loadBalancer:
         servers:
-          - url: "http://srv-docker.local.darksaber.fyi:8080"
+          - url: "http://localhost:8080"
         passHostHeader: true
     dns-01:
       loadBalancer:
