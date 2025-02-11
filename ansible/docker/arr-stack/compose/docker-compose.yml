@@ -61,7 +61,7 @@ services:
     container_name: umlautadaptarr
     environment:
       - TZ=Europe/Berlin
-      - SONARR__ENABLED_true
+      - SONARR__ENABLED=true
       - SONARR__HOST=http://sonarr:8989
       - SONARR__APIKEY=${SONARR_APIKEY}
 
