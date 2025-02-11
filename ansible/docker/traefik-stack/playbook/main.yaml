@@ -82,7 +82,7 @@
       
     - name: Create acme.json with correct permission if it does not exist
       ansible.builtin.file:
-        path: "{{ certs_dir }}/certs/acme.json"
+        path: "{{ certs_dir }}/acme.json"
         state: touch
         mode: "0600"
         owner: "mgrsys"
