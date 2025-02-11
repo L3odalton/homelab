@@ -12,6 +12,18 @@ http:
       tls:
         options: default
       service: pve-s13-01
+    pbs:
+      entryPoints:
+        - "https"
+      rule: "Host(`pbs.darksaber.fyi`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+        - gzip
+        - default-whitelist
+      tls:
+        options: default
+      service: pbs
     unraid:
       entryPoints:
         - "https"
@@ -43,6 +55,11 @@ http:
       loadBalancer:
         servers:
           - url: "https://pve-s13-01.local.darksaber.fyi:8006"
+        passHostHeader: true
+    pbs:
+      loadBalancer:
+        servers:
+          - url: "https://pbs-unraid.local.darksaber.fyi:8007/"
         passHostHeader: true
     unraid:
       loadBalancer:
