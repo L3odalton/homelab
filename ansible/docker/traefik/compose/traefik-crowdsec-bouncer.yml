@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/Berlin
-      - GIN_MODE=debug
+      - GIN_MODE=release
       - CROWDSEC_BOUNCER_API_KEY=${BOUNCER_KEY_TRAEFIK}
       - CROWDSEC_AGENT_HOST=crowdsec:8080
 
