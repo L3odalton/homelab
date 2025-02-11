@@ -8,6 +8,7 @@ http:
         - default-headers
         - https-redirectscheme
         - gzip
+        - default-whitelist
       tls:
         options: default
       service: pve-s13-01
@@ -19,9 +20,23 @@ http:
         - default-headers
         - https-redirectscheme
         - gzip
+        - default-whitelist
       tls:
         options: default
       service: unraid
+    sab:
+      entryPoints:
+        - "https"
+      rule: "Host(`sab.darksaber.fyi`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+        - gzip
+        - default-whitelist
+      tls:
+        options: default
+      service: sab
+
 
   services:
     pve-s13-01:
@@ -33,4 +48,9 @@ http:
       loadBalancer:
         servers:
           - url: "http://unraid.local.darksaber.fyi"
+        passHostHeader: true
+    sab:
+      loadBalancer:
+        servers:
+          - url: "http://srv-docker.local.darksaber.fyi:8080"
         passHostHeader: true
