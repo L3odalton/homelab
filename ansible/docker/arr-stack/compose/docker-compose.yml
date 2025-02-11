@@ -64,6 +64,8 @@ services:
       - SONARR__ENABLED=true
       - SONARR__HOST=http://sonarr:8989
       - SONARR__APIKEY=${SONARR_APIKEY}
+    networks:
+      - proxy
 
   sonarr:
     image: ghcr.io/hotio/sonarr
@@ -78,6 +80,8 @@ services:
     volumes:
       - /home/mgrsys/docker/arr-stack/sonarr/config:/config
       - /mnt/data:/data
+    networks:
+      - proxy
     labels:
       traefik.docker.network: proxy
       traefik.enable: "true"
