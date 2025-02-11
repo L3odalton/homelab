@@ -12,7 +12,7 @@ services:
       - /home/mgrsys/docker/jellyseerr/config:/app/config
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.jellyseerr.rule=Host(`request.darksaber.fyi`)"
+      - "traefik.http.routers.jellyseerr.rule=Host(`anfragen.darksaber.fyi`)"
       - "traefik.http.routers.jellyseerr.entrypoints=https"
       - "traefik.http.routers.jellyseerr.tls=true"
       - "traefik.http.services.jellyseerr.loadbalancer.server.port=5055"
