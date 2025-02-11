@@ -66,6 +66,7 @@ services:
       - SONARR__APIKEY=${SONARR_APIKEY}
     networks:
       - proxy
+    restart: unless-stopped
 
   sonarr:
     image: ghcr.io/hotio/sonarr
@@ -85,11 +86,36 @@ services:
     labels:
       traefik.docker.network: proxy
       traefik.enable: "true"
-      traefik.http.services.prowlarr.loadbalancer.server.port: "9696"
-      traefik.http.routers.prowlarr.entrypoints: https
-      traefik.http.routers.prowlarr.rule: "Host(`prowlarr.darksaber.fyi`)"
-      traefik.http.routers.prowlarr.service: prowlarr
-      traefik.http.routers.prowlarr.tls: "True"
+      traefik.http.services.sonarr.loadbalancer.server.port: "8989"
+      traefik.http.routers.sonarr.entrypoints: https
+      traefik.http.routerssonarr.rule: "Host(`sonarr.darksaber.fyi`)"
+      traefik.http.routers.sonarr.service: sonarr
+      traefik.http.routers.sonarr.tls: "True"
+    restart: unless-stopped
+
+  radarr:
+    image: ghcr.io/hotio/radarr
+    container_name: radarr
+    ports:
+      - 7878:7878
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/Berlin
+    volumes:
+      - /home/mgrsys/docker/arr-stack/radarr/config:/config
+      - /mnt/data:/data
+    networks:
+      - proxy
+    labels:
+      traefik.docker.network: proxy
+      traefik.enable: "true"
+      traefik.http.services.radarr.loadbalancer.server.port: "7878"
+      traefik.http.routers.radarr.entrypoints: https
+      traefik.http.routers.radarr.rule: "Host(`radarr.darksaber.fyi`)"
+      traefik.http.routers.radarr.service: radarr
+      traefik.http.routers.radarr.tls: "True"
     restart: unless-stopped
 
 networks:

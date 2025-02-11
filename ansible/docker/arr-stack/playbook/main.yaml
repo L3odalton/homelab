@@ -10,6 +10,7 @@
     sabnzbd_logs_dir: "{{ sabnzbd_dir }}/logs"
     prowlarr_dir: "{{ base_dir }}/prowlarr"
     sonarr_dir: "{{ base_dir }}/sonarr"
+    radarr_dir: "{{ base_dir }}/radarr"
     repo_dir: "/home/mgrsys/tmp"
     github_repo: "https://github.com/L3odalton/homelab.git"
     docker_network: proxy
@@ -27,6 +28,7 @@
         - "{{ sabnzbd_logs_dir }}"
         - "{{ prowlarr_dir }}"
         - "{{ sonarr_dir }}"
+        - "{{ radarr_dir }}"
 
     - name: Ensure docker network(s) exist
       docker_network:
