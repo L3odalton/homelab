@@ -5,8 +5,9 @@ http:
         - "https"
       rule: "Host(`pve-s13-01.darksaber.fyi`)"
       middlewares:
-        - default-security-headers
+        - default-headers
         - https-redirectscheme
+        - gzip
       tls:
         options: default
       service: pve-s13-01
@@ -15,8 +16,9 @@ http:
         - "https"
       rule: "Host(`unraid.darksaber.fyi`)"
       middlewares:
-        - default-security-headers
+        - default-headers
         - https-redirectscheme
+        - gzip
       tls:
         options: default
       service: unraid
