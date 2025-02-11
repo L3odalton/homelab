@@ -1,0 +1,34 @@
+http:
+  routers:
+    pve-s13-01:
+      entryPoints:
+        - "https"
+      rule: "Host(`pve-s13-01.darksaber.fyi`)"
+      middlewares:
+        - default-security-headers
+        - https-redirectscheme
+      tls:
+        options: default
+      service: pve-s13-01
+    unraid:
+      entryPoints:
+        - "https"
+      rule: "Host(`unraid.darksaber.fyi`)"
+      middlewares:
+        - default-security-headers
+        - https-redirectscheme
+      tls:
+        options: default
+      service: unraid
+
+  services:
+    pve-s13-01:
+      loadBalancer:
+        servers:
+          - url: "https://pve-s13-01.local.darksaber.fyi:8006"
+        passHostHeader: true
+    unraid:
+      loadBalancer:
+        servers:
+          - url: "http://unraid.local.darksaber.fyi"
+        passHostHeader: true
