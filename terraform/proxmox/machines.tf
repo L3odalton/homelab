@@ -68,7 +68,7 @@ resource "proxmox_vm_qemu" "srv-docker" {
     cores = 2
     sockets = 1
     cpu_type = "host"
-    memory = 4096
+    memory = 8192
     automatic_reboot = true
 
     os_type = "cloud-init"
@@ -94,7 +94,7 @@ resource "proxmox_vm_qemu" "srv-docker" {
             scsi0 {
                 disk {
                     storage = "local-lvm"
-                    size    = "20G" 
+                    size    = "100G" 
                 }
             }
         }
