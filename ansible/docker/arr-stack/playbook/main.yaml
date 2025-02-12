@@ -55,7 +55,7 @@
             remote_src: yes
           loop:
             - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/", dest: "{{ compose_dir }}/" }
-            - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/searxng/config", dest: "{{ searxng_conf_dir }}/" }
+            - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/searxng/config/", dest: "{{ searxng_conf_dir }}/" }
 
         - name: Remove existing .env
           file:
