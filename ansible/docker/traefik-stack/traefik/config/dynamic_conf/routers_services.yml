@@ -42,7 +42,6 @@ http:
       rule: "Host(`sab.darksaber.fyi`)"
       middlewares:
         - default-headers
-        - https-redirectscheme
         - gzip
         - default-whitelist
       tls:
