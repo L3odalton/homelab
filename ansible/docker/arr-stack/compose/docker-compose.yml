@@ -35,7 +35,7 @@ services:
       - "traefik.http.routers.sab.rule=Host(`sab.darksaber.fyi`)"
       - "traefik.http.routers.sab.entrypoints=https"
       - "traefik.http.routers.sab.tls=true"
-      - "traefik.http.services.sab.loadbalancer.server.port=9696"
+      - "traefik.http.services.sab.loadbalancer.server.port=8080"
       - "traefik.http.routers.sab.middlewares=default-whitelist@file"
       - "traefik.docker.network=proxy"
 
