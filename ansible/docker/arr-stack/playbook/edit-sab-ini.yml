@@ -10,6 +10,13 @@
         replace: '\1,srv-docker.local.darksaber.fyi,sabnzbd,sab.darksaber.fyi\3'
       register: config_update
 
+    - name: Replace port number
+      replace:
+        path: /path/to/your/config/file.conf
+        regexp: 'port = 8080'
+        replace: 'port = 8181'
+      register: config_update
+
     - name: Restart sabnzbd container
       community.docker.docker_container:
         name: sabnzbd
