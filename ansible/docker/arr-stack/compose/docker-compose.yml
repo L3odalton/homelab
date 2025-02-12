@@ -129,6 +129,7 @@ services:
 
   searxng:
     image: searxng/searxng:latest
+    container_name: searxng
     restart: unless-stopped
     network_mode: "service:gluetun"
     environment:
@@ -137,8 +138,8 @@ services:
       - UWSGI_THREADS=${SEARXNG_UWSGI_THREADS:-4}        
     volumes:
         - /home/mgrsys/docker/arr-stack/searxng/config:/etc/searxng:rw
-    # cap_drop:
-    #   - ALL
+    cap_drop:
+      - ALL
     cap_add:
       - CHOWN
       - SETGID
