@@ -42,7 +42,6 @@ http:
       rule: "Host(`sab.darksaber.fyi`)"
       middlewares:
         - default-headers
-        - gzip
         - default-whitelist
       tls:
         options: default
@@ -80,7 +79,7 @@ http:
     sab:
       loadBalancer:
         servers:
-          - url: "http://localhost:8080"
+          - url: "http://127.0.0.1:8080"
         passHostHeader: true
     dns-01:
       loadBalancer:
