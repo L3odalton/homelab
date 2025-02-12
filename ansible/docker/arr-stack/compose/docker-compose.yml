@@ -1,6 +1,6 @@
 services:
   gluetun:
-    image: qmcgaw/gluetun
+    image: qmcgaw/gluetun:latest
     container_name: gluetun
     cap_add:
       - NET_ADMIN
@@ -41,7 +41,7 @@ services:
     restart: unless-stopped
 
   prowlarr:
-    image: ghcr.io/hotio/prowlarr
+    image: ghcr.io/hotio/prowlarr:latest
     container_name: prowlarr
     environment:
       - PUID=1000
@@ -75,7 +75,7 @@ services:
     restart: unless-stopped
 
   sonarr:
-    image: ghcr.io/hotio/sonarr
+    image: ghcr.io/hotio/sonarr:latest
     container_name: sonarr
     environment:
       - PUID=1000
@@ -98,7 +98,7 @@ services:
     restart: unless-stopped
 
   radarr:
-    image: ghcr.io/hotio/radarr
+    image: ghcr.io/hotio/radarr:latest
     container_name: radarr
     environment:
       - PUID=1000
