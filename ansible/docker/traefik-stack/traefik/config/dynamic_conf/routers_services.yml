@@ -36,16 +36,6 @@ http:
       tls:
         options: default
       service: unraid
-    sab:
-      entryPoints:
-        - "https"
-      rule: "Host(`sab.darksaber.fyi`)"
-      middlewares:
-        - default-headers
-        - default-whitelist
-      tls:
-        options: default
-      service: sab
     dns-01:
       entryPoints:
         - "https"
@@ -75,11 +65,6 @@ http:
       loadBalancer:
         servers:
           - url: "http://unraid.local.darksaber.fyi"
-        passHostHeader: true
-    sab:
-      loadBalancer:
-        servers:
-          - url: "http://127.0.0.1:8080"
         passHostHeader: true
     dns-01:
       loadBalancer:

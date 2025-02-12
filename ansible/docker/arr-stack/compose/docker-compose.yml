@@ -12,8 +12,6 @@ services:
       - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
       - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
       - SERVER_CITIES=${SERVER_CITIES}
-    ports:
-      - 8080:8080 #Sab
     restart: unless-stopped
 
   sabnzbd:
@@ -30,6 +28,17 @@ services:
       - /mnt/data/usenet/complete:/data/usenet/complete
       - /mnt/data/usenet/incomplete:/data/usenet/incomplete
     network_mode: "service:gluetun"
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sab.rule=Host(`sab.darksaber.fyi`)"
+      - "traefik.http.routers.sab.entrypoints=https"
+      - "traefik.http.routers.sab.tls=true"
+      - "traefik.http.services.sab.loadbalancer.server.port=9696"
+      - "traefik.http.routers.sab.middlewares=default-whitelist@file"
+      - "traefik.docker.network=proxy"
+
     restart: unless-stopped
 
   prowlarr:
