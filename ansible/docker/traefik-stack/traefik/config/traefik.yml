@@ -49,7 +49,7 @@ certificatesResolvers:
           - "1.0.0.1:53"
 
 log:
-  level: INFO
+  level: DEBUG
   filePath: "/var/log/traefik/traefik.log"
   format: json
 
