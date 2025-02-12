@@ -4,8 +4,6 @@ global:
 
 api:
   dashboard: true
-  insecure: true
-  debug: true
 
 metrics:
   prometheus:
