@@ -3,3 +3,6 @@ WIREGUARD_PRIVATE_KEY=op://secrets/arrstack/env/wireguardprivatekey
 WIREGUARD_ADDRESSES=op://secrets/arrstack/env/wireguardaddresses
 SERVER_CITIES=op://secrets/arrstack/env/wireguardcity
 SONARR_APIKEY=op://secrets/arrstack/env/sonarrapikey
+SEARXNG_HOSTNAME=search.darksaber.fyi
+SEARXNG_UWSGI_WORKERS=4
+SEARXNG_UWSGI_THREADS=4
