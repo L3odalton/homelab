@@ -12,7 +12,7 @@
 
     - name: Replace port number
       replace:
-        path: /path/to/your/config/file.conf
+        path: /home/mgrsys/docker/arr-stack/sabnzbd/config/sabnzbd.ini
         regexp: 'port = 8080'
         replace: 'port = 8181'
       register: config_update
