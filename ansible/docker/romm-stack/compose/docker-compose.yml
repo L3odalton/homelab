@@ -28,7 +28,7 @@ services:
       - "traefik.http.services.romm.loadbalancer.server.port=80"
       - "traefik.docker.network=proxy"
     depends_on:
-      - romm_db
+      - romm-db
     restart: unless-stopped
 
   romm-db:
