@@ -41,7 +41,7 @@ services:
       - backend
     environment:
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
-      - MARIADB_DATABSE=romm
+      - MARIADB_DATABASE=romm
       - MARIADB_USER=romm-user
       - MARIADB_PASSWORD=${DB_PASSWORD}
     volumes:
