@@ -40,10 +40,10 @@ services:
     networks:
       - backend
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABSE=romm
-      - MYSQL_USER=romm-user
-      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MARIADB_DATABSE=romm
+      - MARIADB_USER=romm-user
+      - MARIADB_PASSWORD=${DB_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
     restart: unless-stopped
