@@ -1,0 +1,22 @@
+---
+- name: Docker Resource Cleanup
+  hosts: docker
+
+  tasks:
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+
+    - name: Prune all Docker resources
+      community.docker.docker_prune:
+        containers: true
+        images: true
+        networks: true
+        volumes: false
+        builder_cache: true
+      register: prune_results
+
+    - name: Display pruning results
+      debug:
+        var: prune_results
