@@ -1,0 +1,24 @@
+---
+services:
+  boilerplate:
+    image: boiler/plate
+    container_name: boilerplate
+    networks:
+      - proxy
+    environment:
+      - LOG_LEVEL=info
+      - TZ=Europe/Berlin
+    volumes:
+      - /home/mgrsys/docker/boilerplate/config:/app/config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.boilerplate.rule=Host(`anfragen.darksaber.fyi`)"
+      - "traefik.http.routers.boilerplate.entrypoints=https"
+      - "traefik.http.routers.boilerplate.tls=true"
+      - "traefik.http.services.boilerplate.loadbalancer.server.port=5055"
+      - "traefik.docker.network=proxy"
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: true

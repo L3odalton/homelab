@@ -5,14 +5,14 @@
   tasks:
     - name: Update host_whitelist
       ansible.builtin.replace:
-        path: /home/mgrsys/docker/arr-stack/sabnzbd/config/sabnzbd.ini
+        path: /home/mgrsys/docker/gluetun-stack/sabnzbd/config/sabnzbd.ini
         regexp: '^(host_whitelist\s*=\s*[^,\n]*)(,)?(.*)$'
         replace: '\1,srv-docker.local.darksaber.fyi,sabnzbd,sab.darksaber.fyi\3'
       register: config_update
 
     - name: Replace port number
       replace:
-        path: /home/mgrsys/docker/arr-stack/sabnzbd/config/sabnzbd.ini
+        path: /home/mgrsys/docker/gluetun-stack/sabnzbd/config/sabnzbd.ini
         regexp: 'port = 8080'
         replace: 'port = 8181'
       register: config_update

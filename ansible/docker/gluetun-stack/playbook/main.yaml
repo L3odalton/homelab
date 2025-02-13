@@ -1,13 +1,13 @@
 ---
-- name: Deploy and update arr-stack
+- name: Boilerplate
   hosts: docker
   vars:
-    service_name: arr-stack
+    service_name: boilerplate
     base_dir: "/home/mgrsys/docker/{{ service_name }}"
     compose_dir: "{{ base_dir }}/compose"
-    prowlarr_dir: "{{ base_dir }}/prowlarr"
-    sonarr_dir: "{{ base_dir }}/sonarr"
-    radarr_dir: "{{ base_dir }}/radarr"
+    sabnzbd_dir: "{{ base_dir }}/sabnzbd"
+    sabnzbd_bu_dir: "{{ sabnzbd_dir }}/backup"
+    sabnzbd_logs_dir: "{{ sabnzbd_dir }}/logs"
     repo_dir: "/home/mgrsys/tmp"
     github_repo: "https://github.com/L3odalton/homelab.git"
     docker_network: proxy
@@ -23,9 +23,6 @@
         - "{{ sabnzbd_dir }}"
         - "{{ sabnzbd_bu_dir }}"
         - "{{ sabnzbd_logs_dir }}"
-        - "{{ prowlarr_dir }}"
-        - "{{ sonarr_dir }}"
-        - "{{ radarr_dir }}"
 
     - name: Ensure docker network(s) exist
       docker_network:
@@ -49,13 +46,13 @@
           loop:
             - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/", dest: "{{ compose_dir }}/" }
 
-        - name: Remove existing .env
+        - name: Remove existing .env and cf-token files
           file:
             path: "{{ compose_dir }}/{{ item }}"
             state: absent
           loop:
             - ".env"
-          ignore_errors: yes     
+          ignore_errors: yes
 
         - name: Inject Secrets from 1Password
           shell: |
