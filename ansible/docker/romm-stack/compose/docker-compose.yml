@@ -5,6 +5,7 @@ services:
     container_name: romm
     networks:
       - proxy
+      - backend
     environment:
       - DB_HOST=romm-db
       - DB_NAME=romm
@@ -36,6 +37,8 @@ services:
   romm-db:
     image: mariadb:latest
     container_name: romm-db
+    networks:
+      - backend
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABSE=romm
