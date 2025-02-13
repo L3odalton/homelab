@@ -9,7 +9,7 @@ services:
       - DB_HOST=romm-db
       - DB_NAME=romm
       - DB_USER=romm-user
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PASSWD=${DB_PASSWORD}
       - IGDB_CLIENT_ID=${IGDB_CLIENT_ID}
       - IGDB_CLIENT_SECRET=${IGDB_CLIENT_SECRET}
       - ROMM_AUTH_SECRET_KEY=${ROMM_AUTH_SECRET_KEY}
