@@ -1,0 +1,54 @@
+---
+services:
+  romm:
+    image: rommapp/romm:latest
+    container_name: romm
+    networks:
+      - proxy
+    environment:
+      - DB_HOST=romm-db
+      - DB_NAME=romm
+      - DB_USER=romm-user
+      - DB_PASSWORD=${DB_PASSWORD}
+      - IGDB_CLIENT_ID=${IGDB_CLIENT_ID}
+      - IGDB_CLIENT_SECRET=${IGDB_CLIENT_SECRET}
+      - ROMM_AUTH_SECRET_KEY=${ROMM_AUTH_SECRET_KEY}
+    volumes:
+      - romm_resources:/romm/resources
+      - romm_redis_data:/redis-data
+      - /mnt/data/romm/library:/romm/library
+      - /mnt/data/romm/assets:/romm/assets
+      - /mnt/data/romm/config:/romm/config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.romm.rule=Host(`games.darksaber.fyi`)"
+      - "traefik.http.routers.romm.entrypoints=https"
+      - "traefik.http.routers.romm.tls=true"
+      - "traefik.http.routers.romm.middlewares=default-whitelist@file"
+      - "traefik.http.services.romm.loadbalancer.server.port=80"
+      - "traefik.docker.network=proxy"
+    depends_on:
+      - romm_db
+    restart: unless-stopped
+
+  romm-db:
+    image: mariadb:latest
+    container_name: romm-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABSE=romm
+      - MYSQL_USER=romm-user
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+networks:
+  proxy:
+    external: true
+  backend:
+    internal: true
+
+volumes:
+  mysql_data:
+  romm_resources:
+  romm_redis_data:
