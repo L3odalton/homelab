@@ -1,10 +1,11 @@
 ---
-- name: RomM Container Stack
+- name: Dozzle Container
   hosts: docker
   vars:
-    service_name: romm-stack
+    service_name: dozzle
     base_dir: "/home/mgrsys/docker/{{ service_name }}"
     compose_dir: "{{ base_dir }}/compose"
+    dozzle_data_dir: "{{ base_dir }}/data"
     repo_dir: "/home/mgrsys/tmp"
     github_repo: "https://github.com/L3odalton/homelab.git"
     docker_network: proxy
@@ -17,6 +18,7 @@
         mode: "0755"
       loop:
         - "{{ compose_dir }}"
+        - "{{ dozzle_data_dir }}"
 
     - name: Ensure docker network(s) exist
       docker_network:
@@ -40,12 +42,12 @@
           loop:
             - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/", dest: "{{ compose_dir }}/" }
 
-        - name: Remove existing .env
+        - name: Remove existing users.yml
           file:
             path: "{{ compose_dir }}/{{ item }}"
             state: absent
           loop:
-            - ".env"
+            - "users.yml"
           ignore_errors: yes
 
         - name: Inject Secrets from 1Password
@@ -53,7 +55,7 @@
             op inject -i "{{ item.input }}" -o "{{ item.output }}"
             test -f "{{ item.output }}"
           loop:
-            - { input: "{{ compose_dir }}/.env.tpl", output: "{{ compose_dir }}/.env", name: ".env" }
+            - { input: "{{ compose_dir }}/users.yml.tpl", output: "{{ compose_dir }}/users.yml", name: "users.yml" }
           environment:
             OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
           no_log: yes
