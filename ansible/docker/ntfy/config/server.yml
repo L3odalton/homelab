@@ -144,26 +144,6 @@ attachment-expiry-duration: "3h"
 # smtp-server-domain:
 # smtp-server-addr-prefix:
 
-# Web Push support (background notifications for browsers)
-#
-# If enabled, allows ntfy to receive push notifications, even when the ntfy web app is closed. When enabled, users
-# can enable background notifications in the web app. Once enabled, ntfy will forward published messages to the push
-# endpoint, which will then forward it to the browser.
-#
-# You must configure web-push-public/private key, web-push-file, and web-push-email-address below to enable Web Push.
-# Run "ntfy webpush keys" to generate the keys.
-# web-push-public-key:
-# web-push-private-key:
-# web-push-file:
-# web-push-email-address:
-# web-push-startup-queries:
-
-# If enabled, ntfy can perform voice calls via Twilio via the "X-Call" header.
-# twilio-account:
-# twilio-auth-token:
-# twilio-phone-number:
-# twilio-verify-service:
-
 # Interval in which keepalive messages are sent to the client. This is to prevent
 # intermediaries closing the connection for inactivity.
 #
@@ -285,19 +265,6 @@ message-delay-limit: "3d"
 # no "rate visitor" has been previously registered. This is to avoid burning the publisher's "visitor-message-daily-limit".
 #
 # visitor-subscriber-rate-limiting: false
-
-# Payments integration via Stripe
-#
-# - stripe-secret-key is the key used for the Stripe API communication. Setting this values
-#   enables payments in the ntfy web app (e.g. Upgrade dialog). See https://dashboard.stripe.com/apikeys.
-# - stripe-webhook-key is the key required to validate the authenticity of incoming webhooks from Stripe.
-#   Webhooks are essential up keep the local database in sync with the payment provider. See https://dashboard.stripe.com/webhooks.
-# - billing-contact is an email address or website displayed in the "Upgrade tier" dialog to let people reach
-#   out with billing questions. If unset, nothing will be displayed.
-#
-# stripe-secret-key:
-# stripe-webhook-key:
-# billing-contact:
 
 # Metrics
 #
