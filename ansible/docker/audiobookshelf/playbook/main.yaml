@@ -1,0 +1,56 @@
+---
+- name: Audiobookshelf docker container
+  hosts: docker
+  vars:
+    service_name: audiobookshelf
+    base_dir: "/home/mgrsys/docker/{{ service_name }}"
+    compose_dir: "{{ base_dir }}/compose"
+    config_dir: "{{ base_dir }}/config"
+    metadata_dir: "{{ base_dir }}/metadata"
+    repo_dir: "/home/mgrsys/tmp"
+    github_repo: "https://github.com/L3odalton/homelab.git"
+    docker_network: proxy
+
+  tasks:
+    - name: Ensure directories exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ compose_dir }}"
+        - "{{ config_dir }}"
+        - "{{ metadata_dir }}"
+
+    - name: Ensure docker network(s) exist
+      docker_network:
+        name: "{{ docker_network }}"
+        state: present
+
+    - name: Clone/pull latest configuration from GitHub
+      git:
+        repo: "{{ github_repo }}"
+        dest: "{{ repo_dir }}"
+        update: yes
+        force: yes
+      register: git_status
+
+    - block:
+        - name: Copy files using a loop
+          copy:
+            src: "{{ item.src }}"
+            dest: "{{ item.dest }}"
+            remote_src: yes
+          loop:
+            - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/", dest: "{{ compose_dir }}/" }
+
+      when: git_status.changed
+
+    - name: Deploy/update and restart docker container
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        files:
+          - docker-compose.yml
+        state: present
+        pull: policy
+        recreate: always
