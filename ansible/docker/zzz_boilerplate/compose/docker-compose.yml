@@ -12,10 +12,11 @@ services:
       - /home/mgrsys/docker/boilerplate/config:/app/config
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.boilerplate.rule=Host(`anfragen.darksaber.fyi`)"
+      - "traefik.http.routers.boilerplate.rule=Host(`boilerplate.darksaber.fyi`)"
       - "traefik.http.routers.boilerplate.entrypoints=https"
       - "traefik.http.routers.boilerplate.tls=true"
       - "traefik.http.services.boilerplate.loadbalancer.server.port=5055"
+      - "traefik.http.routers.boilerplate.middlewares=default-whitelist@file"
       - "traefik.docker.network=proxy"
     restart: unless-stopped
 
