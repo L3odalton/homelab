@@ -11,6 +11,7 @@ services:
       - proxy
     environment:
       - DOZZLE_AUTH_PROVIDER=simple
+      - DOZZLE_ENABLE_ACTIONS=true
     secrets:
       - source: users
         target: /data/users.yml
