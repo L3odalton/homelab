@@ -1,0 +1,67 @@
+---
+- name: Post-provisioning setup for VM
+  hosts: docker
+  become: true
+
+  tasks:
+    - name: Ensure system packages are up to date
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install prerequisites for beszel
+      apt:
+        name:
+          - curl
+        state: present
+
+    - name: Allow mgrsys to run sudo without password
+      copy:
+        dest: /etc/sudoers.d/mgrsys
+        content: "mgrsys ALL=(ALL) NOPASSWD:ALL"
+        mode: 0440
+
+    - name: Disable SSH password authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+      notify: Restart SSH
+
+    - name: Download install-hub.sh
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/henrygd/beszel/main/supplemental/scripts/install-hub.sh
+        dest: /tmp/install-hub.sh
+        mode: '0755'
+      register: download_result
+
+    - name: Check if beszel-hub.service exists
+      ansible.builtin.stat:
+        path: /etc/systemd/system/beszel-hub.service
+      register: hub_check
+
+    - name: Execute install-hub.sh
+      ansible.builtin.shell:
+        cmd: ./install-hub.sh
+      args:
+        chdir: /tmp
+      become: true
+      when: not hub_check.stat.exists and download_result.changed
+      register: hub_output
+
+    - name: Print the output of install-hub.sh
+      ansible.builtin.debug:
+        var: hub_output.stdout_lines
+
+    - name: Remove install-hub.sh from /tmp
+      ansible.builtin.file:
+        path: /tmp/install-hub.sh
+        state: absent
+      become: true
+      when: not hub_check.stat.exists and download_result.changed
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted
