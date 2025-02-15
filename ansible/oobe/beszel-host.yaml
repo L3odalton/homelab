@@ -13,7 +13,25 @@
       apt:
         name:
           - curl
+          - firewalld
         state: present
+
+    - name: Open firewall ports
+      ansible.posix.firewalld:
+        port: "{{ item }}"
+        permanent: true
+        state: enabled
+        immediate: true
+      loop:
+        - 22/tcp
+        - 45876/tcp  # Agent incoming
+        - 8090/tcp   # Hub incoming
+
+    - name: Ensure firewalld is running and enabled
+      ansible.builtin.systemd:
+        name: firewalld
+        state: started
+        enabled: true
 
     - name: Allow mgrsys to run sudo without password
       copy:
@@ -45,7 +63,6 @@
         cmd: ./install-hub.sh
       args:
         chdir: /tmp
-      become: true
       when: not hub_check.stat.exists and download_result.changed
       register: hub_output
 
@@ -57,7 +74,6 @@
       ansible.builtin.file:
         path: /tmp/install-hub.sh
         state: absent
-      become: true
       when: not hub_check.stat.exists and download_result.changed
 
   handlers:
