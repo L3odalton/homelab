@@ -91,7 +91,7 @@ cache-duration: "12h"
 #   If you are running ntfy with systemd, make sure this user database file is owned by the
 #   ntfy user and group by running: chown ntfy.ntfy <filename>.
 #
-auth-file: "/etc/mtfy/auth.db"
+auth-file: "/etc/ntfy/auth.db"
 auth-default-access: "deny-all"
 # auth-startup-queries:
 
