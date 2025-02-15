@@ -1,6 +1,6 @@
 resource "proxmox_lxc" "basic" {
   target_node  = "pve-s13-01"
-  ostemplate   = "local:vztmpl/ubuntu-24.04-standard_24.04-2_amd64.tar.gz"
+  ostemplate   = "local:vztmpl/ubuntu-24.04-standard_24.04-2_amd64.tar.zst"
   cores        = 1
   hostname     = "srv-beszel"
   memory       = 512
