@@ -13,7 +13,7 @@ resource "proxmox_vm_qemu" "srv-beszel" {
     cores = 1
     sockets = 1
     cpu_type = "host"
-    memory = 1024
+    memory = 512
     automatic_reboot = true
 
     os_type = "cloud-init"
