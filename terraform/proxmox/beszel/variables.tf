@@ -11,8 +11,3 @@ variable "proxmox_api_token_secret" {
     type = string
     sensitive = true
 }
-
-variable "lxc_password" {
-  type      = string
-  sensitive = true
-}
