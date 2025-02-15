@@ -11,6 +11,8 @@ services:
     volumes:
       - /home/mgrsys/docker/ntfy/config:/etc/ntfy
       - /home/mgrsys/docker/ntfy/cache:/var/cache/ntfy
+    networks:
+      - proxy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ntfy.rule=Host(`ntfy.darksaber.fyi`)"

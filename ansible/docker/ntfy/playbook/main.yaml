@@ -22,6 +22,16 @@
         - "{{ config_dir }}"
         - "{{ cache_dir }}"
 
+    - name: Set ownership of cache and config directories
+      file:
+        path: "{{ item }}"
+        owner: 1000
+        group: 1000
+        recurse: yes
+      loop:
+        - "{{ config_dir }}"
+        - "{{ cache_dir }}"
+
     - name: Ensure docker network(s) exist
       docker_network:
         name: "{{ docker_network }}"
