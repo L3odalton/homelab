@@ -6,7 +6,7 @@
     - My First Service:
         widget:
             type: technitium
-            url: http://technitium-01.local.darksaber.fyi
+            url: http://technitium-01.local.darksaber.fyi:5380
             key: {{HOMEPAGE_VAR_TECHNITIUM_01_KEY}}
             range: LastDay
         
