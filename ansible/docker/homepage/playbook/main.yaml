@@ -31,37 +31,33 @@
         dest: "{{ repo_dir }}"
         update: yes
         force: yes
-      register: git_status
 
-    - block:
-        - name: Copy files using a loop
-          copy:
-            src: "{{ item.src }}"
-            dest: "{{ item.dest }}"
-            remote_src: yes
-          loop:
-            - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/", dest: "{{ compose_dir }}/" }
-            - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/config/", dest: "{{ config_dir }}/" }
+    - name: Copy files using a loop
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        remote_src: yes
+      loop:
+        - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/", dest: "{{ compose_dir }}/" }
+        - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/config/", dest: "{{ config_dir }}/" }
 
-        - name: Remove existing .env
-          file:
-            path: "{{ compose_dir }}/{{ item }}"
-            state: absent
-          loop:
-            - ".env"
-          ignore_errors: yes
+    - name: Remove existing .env
+      file:
+        path: "{{ compose_dir }}/{{ item }}"
+        state: absent
+      loop:
+        - ".env"
+      ignore_errors: yes
 
-        - name: Inject Secrets from 1Password
-          shell: |
-            op inject -i "{{ item.input }}" -o "{{ item.output }}"
-            test -f "{{ item.output }}"
-          loop:
-            - { input: "{{ compose_dir }}/.env.tpl", output: "{{ compose_dir }}/.env", name: ".env" }
-          environment:
-            OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
-          no_log: yes
-
-      when: git_status.changed
+    - name: Inject Secrets from 1Password
+      shell: |
+        op inject -i "{{ item.input }}" -o "{{ item.output }}"
+        test -f "{{ item.output }}"
+      loop:
+        - { input: "{{ compose_dir }}/.env.tpl", output: "{{ compose_dir }}/.env", name: ".env" }
+      environment:
+        OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
+      no_log: yes
 
     - name: Deploy/update and restart docker container
       community.docker.docker_compose_v2:
@@ -71,3 +67,8 @@
         state: present
         pull: policy
         recreate: always
+    
+    - name: Remove Git Tmp Folder
+      file:
+        path: "{{ repo_dir }}"
+        state: absent
