@@ -4,6 +4,7 @@
 
 - My First Group:
     - My First Service:
+        href: http://technitium-01.local.darksaber.fyi:5380
         widget:
             type: technitium
             url: http://technitium-01.local.darksaber.fyi:5380
