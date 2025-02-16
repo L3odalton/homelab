@@ -1,5 +1,2 @@
 COMPOSE_PROJECT_NAME=watchtower
-WATCHTOWER_NOTIFICATION_EMAIL_FROM=op://secrets/Mailing/env/from
-WATCHTOWER_NOTIFICATION_EMAIL_SERVER=op://secrets/Mailing/env/server
-WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER=op://secrets/Mailing/env/user
-WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD=op://secrets/Mailing/env/password
+WATCHTOWER_NOTIFICATION_URL=op://secrets/ntfy/env/watchtower
