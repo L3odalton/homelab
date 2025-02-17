@@ -60,6 +60,18 @@ http:
       tls:
         options: default
       service: dns-02
+    homeassistant:
+      entryPoints:
+        - "https"
+      rule: "Host(`ha.darksaber.fyi`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+        - gzip
+        - default-whitelist
+      tls:
+        options: default
+      service: homeassistant
 
 
   services:
@@ -87,4 +99,9 @@ http:
       loadBalancer:
         servers:
           - url: "http://technitium-02.local.darksaber.fyi:5380"
+        passHostHeader: true
+    homeassistant:
+      loadBalancer:
+        servers:
+          - url: "http://homeassistant.local.darksaber.fyi:8123"
         passHostHeader: true

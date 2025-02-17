@@ -3,7 +3,7 @@
 # https://gethomepage.dev/configs/services/
 
 - Network:
-    - DNS:
+    - Technitium-01:
         href: https://dns-01.darksaber.fyi
         widget:
             type: technitium
@@ -13,7 +13,7 @@
         
 
 - ARR:
-    - Indexer:
+    - Prowlarr:
         href: https://prowlarr.darksaber.fyi
         widget:
             type: prowlarr
