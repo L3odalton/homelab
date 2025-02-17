@@ -48,6 +48,18 @@ http:
       tls:
         options: default
       service: dns-01
+    dns-02:
+      entryPoints:
+        - "https"
+      rule: "Host(`dns-02.darksaber.fyi`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+        - gzip
+        - default-whitelist
+      tls:
+        options: default
+      service: dns-02
 
 
   services:
@@ -69,5 +81,10 @@ http:
     dns-01:
       loadBalancer:
         servers:
-          - url: "http://technitium-01.local.darksaber.fyi:8080"
+          - url: "http://technitium-01.local.darksaber.fyi:5380"
+        passHostHeader: true
+    dns-02:
+      loadBalancer:
+        servers:
+          - url: "http://technitium-02.local.darksaber.fyi:5380"
         passHostHeader: true

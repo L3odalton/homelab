@@ -2,20 +2,24 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/services/
 
-- My First Group:
-    - My First Service:
-        href: http://technitium-01.local.darksaber.fyi:5380
+- Network:
+    - DNS:
+        href: https://dns-01.darksaber.fyi
         widget:
             type: technitium
-            url: http://technitium-01.local.darksaber.fyi:5380
+            url: https://dns-01.darksaber.fyi
             key: {{HOMEPAGE_VAR_TECHNITIUM_01_KEY}}
             range: LastDay
         
 
-- My Second Group:
-    - My Second Service:
-        href: http://localhost/
-        description: Homepage is the best
+- ARR:
+    - Indexer:
+        href: https://prowlarr.darksaber.fyi
+        widget:
+            type: prowlarr
+            url: https://prowlarr.darksaber.fyi
+            key: {{HOMEPAGE_VAR_PROWLARR_KEY}}
+
 
 - My Third Group:
     - My Third Service:
