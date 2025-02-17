@@ -20,9 +20,6 @@
         mode: "0755"
       loop:
         - "{{ compose_dir }}"
-        - "{{ sabnzbd_dir }}"
-        - "{{ sabnzbd_bu_dir }}"
-        - "{{ sabnzbd_logs_dir }}"
         - "{{ prowlarr_dir }}"
         - "{{ sonarr_dir }}"
         - "{{ radarr_dir }}"
