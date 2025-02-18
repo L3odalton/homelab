@@ -58,7 +58,7 @@ services:
       - UWSGI_WORKERS=${SEARXNG_UWSGI_WORKERS:-4}
       - UWSGI_THREADS=${SEARXNG_UWSGI_THREADS:-4}
     volumes:
-      - home/mgrsys/docker/gluetun-stack/searxng:/etc/searxng
+      - /home/mgrsys/docker/gluetun-stack/searxng:/etc/searxng
     network_mode: "service:gluetun"
     cap_drop:
       - ALL
