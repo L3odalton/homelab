@@ -17,12 +17,20 @@ services:
       - SERVER_CITIES=${SERVER_CITIES}
     labels:
       - "traefik.enable=true"
+      # Sab
       - "traefik.http.routers.sab.service=sab"
       - "traefik.http.routers.sab.rule=Host(`sab.darksaber.fyi`)"
       - "traefik.http.routers.sab.entrypoints=https"
       - "traefik.http.routers.sab.tls=true"
       - "traefik.http.services.sab.loadbalancer.server.port=8181"
       - "traefik.http.routers.sab.middlewares=default-whitelist@file"
+      # Searxng
+      - "traefik.http.routers.search.service=search"
+      - "traefik.http.routers.search.rule=Host(`search.darksaber.fyi`)"
+      - "traefik.http.routers.search.entrypoints=https"
+      - "traefik.http.routers.search.tls=true"
+      - "traefik.http.services.search.loadbalancer.server.port=8080"
+      - "traefik.http.routers.search.middlewares=default-whitelist@file"
       - "traefik.docker.network=proxy"
     restart: unless-stopped
 
@@ -41,6 +49,28 @@ services:
       - /mnt/data/usenet/incomplete:/data/usenet/incomplete
     network_mode: "service:gluetun"
     restart: unless-stopped
+
+  searxng:
+    image: searxng/searxng:latest
+    container_name: searxng
+    environment:
+      - SEARXNG_BASE_URL=https://${SEARXNG_HOSTNAME}/
+      - UWSGI_WORKERS=${SEARXNG_UWSGI_WORKERS:-4}
+      - UWSGI_THREADS=${SEARXNG_UWSGI_THREADS:-4}
+    volumes:
+      - home/mgrsys/docker/gluetun-stack/searxng:/etc/searxng
+    network_mode: "service:gluetun"
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
 
 networks:
   proxy:
