@@ -69,12 +69,10 @@
         OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
       no_log: yes
 
-    - name: Change ownership of searxng/settings.yml to root
+    - name: Change permissions of searxng/settings.yml
       ansible.builtin.file:
         path: "{{ config_dir }}/settings.yml"
-        owner: root
-        group: root
-      become: true
+        mode: "0644"
 
     - name: Deploy/update and restart docker container
       community.docker.docker_compose_v2:
@@ -90,14 +88,12 @@
         path: "{{ compose_dir }}/docker-compose.yml"
         regexp: '^(\s*)#(\s*)cap_drop:'
         replace: '\1\2cap_drop:'
-      become: true
 
     - name: Uncomment - ALL in docker-compose.yml
       ansible.builtin.replace:
         path: "{{ compose_dir }}/docker-compose.yml"
         regexp: '^(\s*)#(\s*)- ALL'
         replace: '\1\2- ALL'
-      become: true
 
     - name: restart docker container
       community.docker.docker_compose_v2:
