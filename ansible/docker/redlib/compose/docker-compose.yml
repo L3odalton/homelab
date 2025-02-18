@@ -14,6 +14,8 @@ services:
       - "traefik.http.services.redlib.loadbalancer.server.port=8080"
       - "traefik.http.routers.redlib.middlewares=default-whitelist@file"
       - "traefik.docker.network=proxy"
+    healthcheck:
+      disable: true
     restart: unless-stopped
 
 networks:
