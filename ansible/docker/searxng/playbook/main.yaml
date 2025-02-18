@@ -71,7 +71,7 @@
 
     - name: Change ownership of searxng/settings.yml to root
       ansible.builtin.file:
-        path: /home/mgrsys/docker/searxng/config/settings.yml
+        path: "{{ config_dir }}/settings.yml"
         owner: root
         group: root
       become: true
@@ -87,14 +87,14 @@
 
     - name: Uncomment cap_drop in docker-compose.yml
       ansible.builtin.replace:
-        path: /home/mgrsys/docker/gluetun-stack/docker-compose.yml
+        path: "{{ compose_dir }}/docker-compose.yml"
         regexp: '^(\s*)#(\s*)cap_drop:'
         replace: '\1\2cap_drop:'
       become: true
 
     - name: Uncomment - ALL in docker-compose.yml
       ansible.builtin.replace:
-        path: /home/mgrsys/docker/gluetun-stack/docker-compose.yml
+        path: "{{ compose_dir }}/docker-compose.yml"
         regexp: '^(\s*)#(\s*)- ALL'
         replace: '\1\2- ALL'
       become: true
