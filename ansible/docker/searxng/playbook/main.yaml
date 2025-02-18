@@ -1,0 +1,114 @@
+---
+- name: Docker Searxng
+  hosts: docker
+  vars:
+    service_name: searxng
+    base_dir: "/home/mgrsys/docker/{{ service_name }}"
+    compose_dir: "{{ base_dir }}/compose"
+    config_dir: "{{ base_dir }}/config"
+    repo_dir: "/home/mgrsys/tmp"
+    github_repo: "https://github.com/L3odalton/homelab.git"
+    docker_network: proxy
+
+  tasks:
+    - name: Ensure directories exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ compose_dir }}"
+        - "{{ searxng_dir }}"
+
+    - name: Ensure docker network(s) exist
+      docker_network:
+        name: "{{ docker_network }}"
+        state: present
+
+    - name: Clone/pull latest configuration from GitHub
+      git:
+        repo: "{{ github_repo }}"
+        dest: "{{ repo_dir }}"
+        update: yes
+        force: yes
+      register: git_status
+
+    - name: Copy files using a loop
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        remote_src: yes
+      loop:
+        - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/", dest: "{{ compose_dir }}/" }
+        - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/config/", dest: "{{ config_dir }}/" }
+
+    - name: Remove existing .env files
+      file:
+        path: "{{ compose_dir }}/{{ item }}"
+        state: absent
+      loop:
+        - ".env"
+      ignore_errors: yes
+
+    - name: Remove existing settings.yml files
+      file:
+        path: "{{ config_dir }}/{{ item }}"
+        state: absent
+      loop:
+        - "settings.yml"
+      ignore_errors: yes
+
+    - name: Inject Secrets from 1Password
+      shell: |
+        op inject -i "{{ item.input }}" -o "{{ item.output }}"
+        test -f "{{ item.output }}"
+      loop:
+        - { input: "{{ compose_dir }}/.env.tpl", output: "{{ compose_dir }}/.env", name: ".env" }
+        - { input: "{{ config_dir }}/settings.yml.tpl", output: "{{ config_dir }}/settings.yml", name: "settings.yml" }
+      environment:
+        OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
+      no_log: yes
+
+    - name: Change ownership of searxng/settings.yml to root
+      ansible.builtin.file:
+        path: /home/mgrsys/docker/searxng/config/settings.yml
+        owner: root
+        group: root
+      become: true
+
+    - name: Deploy/update and restart docker container
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        files:
+          - docker-compose.yml
+        state: present
+        pull: policy
+        recreate: always
+
+    - name: Uncomment cap_drop in docker-compose.yml
+      ansible.builtin.replace:
+        path: /home/mgrsys/docker/gluetun-stack/docker-compose.yml
+        regexp: '^(\s*)#(\s*)cap_drop:'
+        replace: '\1\2cap_drop:'
+      become: true
+
+    - name: Uncomment - ALL in docker-compose.yml
+      ansible.builtin.replace:
+        path: /home/mgrsys/docker/gluetun-stack/docker-compose.yml
+        regexp: '^(\s*)#(\s*)- ALL'
+        replace: '\1\2- ALL'
+      become: true
+
+    - name: restart docker container
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        files:
+          - docker-compose.yml
+        state: present
+        pull: policy
+        recreate: always
+
+    - name: Remove Git Tmp Folder
+      file:
+        path: "{{ repo_dir }}"
+        state: absent

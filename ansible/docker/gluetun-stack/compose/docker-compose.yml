@@ -50,28 +50,6 @@ services:
     network_mode: "service:gluetun"
     restart: unless-stopped
 
-  searxng:
-    image: searxng/searxng:latest
-    container_name: searxng
-    environment:
-      - SEARXNG_BASE_URL=https://${SEARXNG_HOSTNAME}/
-      - UWSGI_WORKERS=${SEARXNG_UWSGI_WORKERS:-4}
-      - UWSGI_THREADS=${SEARXNG_UWSGI_THREADS:-4}
-    volumes:
-      - /home/mgrsys/docker/gluetun-stack/searxng:/etc/searxng:rw
-    network_mode: "service:gluetun"
-    # cap_drop:
-    #   - ALL
-    cap_add:
-      - CHOWN
-      - SETGID
-      - SETUID
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "1"
-
 networks:
   proxy:
     external: true
