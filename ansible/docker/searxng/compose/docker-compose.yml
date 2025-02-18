@@ -9,8 +9,8 @@ services:
     volumes:
       - /home/mgrsys/docker/searxng/config:/etc/searxng:rw
     network_mode: "container:gluetun"
-    # cap_drop:
-    #   - ALL
+    #cap_drop:
+      #- ALL
     cap_add:
       - CHOWN
       - SETGID
