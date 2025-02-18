@@ -1,8 +1,8 @@
 ---
-- name: Boilerplate
+- name: Redlib docker container
   hosts: docker
   vars:
-    service_name: boilerplate
+    service_name: redlib
     base_dir: "/home/mgrsys/docker/{{ service_name }}"
     compose_dir: "{{ base_dir }}/compose"
     repo_dir: "/home/mgrsys/tmp"
