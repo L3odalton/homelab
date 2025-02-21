@@ -8,5 +8,5 @@ services:
       - PLEX_TOKEN=${PLEX_TOKEN}
       - TZ=Europe/Berlin
     volumes:
-      - /home/mgrsys/docker/boilerplate/config:/app/config
+      - /home/mgrsys/docker/plex-auto-languages/config:/config
     restart: unless-stopped
