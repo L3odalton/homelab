@@ -1,0 +1,12 @@
+---
+services:
+  plexautolanguages:
+    image: remirigal/plex-auto-languages:latest
+    container_name: plexautolanguages
+    environment:
+      - PLEX_URL=10.0.100.2:32400
+      - PLEX_TOKEN=${PLEX_TOKEN}
+      - TZ=Europe/Berlin
+    volumes:
+      - /home/mgrsys/docker/boilerplate/config:/app/config
+    restart: unless-stopped
