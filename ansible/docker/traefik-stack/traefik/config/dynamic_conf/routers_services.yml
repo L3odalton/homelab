@@ -72,6 +72,18 @@ http:
       tls:
         options: default
       service: homeassistant
+    semaphore:
+        entryPoints:
+          - "https"
+        rule: "Host(`semaphore.darksaber.fyi`)"
+        middlewares:
+          - default-headers
+          - https-redirectscheme
+          - gzip
+          - default-whitelist
+        tls:
+          options: default
+        service: semaphore
 
 
   services:
@@ -104,4 +116,9 @@ http:
       loadBalancer:
         servers:
           - url: "http://homeassistant.local.darksaber.fyi:8123"
+        passHostHeader: true
+    semaphore:
+      loadBalancer:
+        servers:
+          - url: "http://srv-semaphore.local.darksaber.fyi:3000"
         passHostHeader: true
