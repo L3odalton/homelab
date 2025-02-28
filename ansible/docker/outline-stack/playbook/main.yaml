@@ -61,14 +61,14 @@
         OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
       no_log: yes
 
-    - name: Deploy/update and restart docker container
-      community.docker.docker_compose_v2:
-        project_src: "{{ compose_dir }}"
-        files:
-          - docker-compose.yml
-        state: present
-        pull: policy
-        recreate: always
+    # - name: Deploy/update and restart docker container
+    #   community.docker.docker_compose_v2:
+    #     project_src: "{{ compose_dir }}"
+    #     files:
+    #       - docker-compose.yml
+    #     state: present
+    #     pull: policy
+    #     recreate: always
 
     - name: Remove Git Tmp Folder
       file:

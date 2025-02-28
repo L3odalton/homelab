@@ -16,10 +16,6 @@ REDIS_URL=redis://redis:6379
 URL=docs.darksaber.fyi
 PORT=443
 
-# See [documentation](docs/SERVICES.md) on running a separate collaboration
-# server, for normal operation this does not need to be set.
-# COLLABORATION_URL=
-
 # Specify what storage system to use. Possible value is one of "s3" or "local".
 # For "local", the avatar images and document attachments will be saved on local disk. 
 FILE_STORAGE=local
@@ -64,18 +60,6 @@ OIDC_SCOPES=openid profile email
 
 # –––––––––––––––– OPTIONAL ––––––––––––––––
 
-# Base64 encoded private key and certificate for HTTPS termination. This is only
-# required if you do not use an external reverse proxy. See documentation:
-# https://wiki.generaloutline.com/share/1c922644-40d8-41fe-98f9-df2b67239d45
-SSL_KEY=
-SSL_CERT=
-
-# If using a Cloudfront/Cloudflare distribution or similar it can be set below.
-# This will cause paths to javascript, stylesheets, and images to be updated to
-# the hostname defined in CDN_URL. In your CDN configuration the origin server
-# should be set to the same as URL.
-CDN_URL=
-
 # Auto-redirect to https in production. The default is true but you may set to
 # false if you can be sure that SSL is terminated at an external loadbalancer.
 FORCE_HTTPS=false
@@ -88,21 +72,9 @@ ENABLE_UPDATES=false
 # available memory by 512 for a rough estimate
 WEB_CONCURRENCY=1
 
-
 # Configure lowest severity level for server logs. Should be one of
 # error, warn, info, http, verbose, debug and silly
 LOG_LEVEL=info
-
-# To support sending outgoing transactional emails such as "document updated" or
-# "you've been invited" you'll need to provide authentication for an SMTP server
-SMTP_HOST=
-SMTP_PORT=
-SMTP_USERNAME=
-SMTP_PASSWORD=
-SMTP_FROM_EMAIL=
-SMTP_REPLY_EMAIL=
-SMTP_TLS_CIPHERS=
-SMTP_SECURE=true
 
 # The default interface language. See translate.getoutline.com for a list of
 # available language codes and their rough percentage translated.
@@ -114,7 +86,3 @@ RATE_LIMITER_ENABLED=false
 # Configure default throttling parameters for rate limiter
 RATE_LIMITER_REQUESTS=1000
 RATE_LIMITER_DURATION_WINDOW=60
-
-# Iframely API config
-IFRAMELY_URL=
-IFRAMELY_API_KEY=

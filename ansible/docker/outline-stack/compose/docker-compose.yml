@@ -9,8 +9,8 @@ services:
       - postgres
       - redis
     networks:
-      - proxy
       - backend
+      - proxy
     labels:
       # Traefik
       - "traefik.enable=true"
