@@ -13,12 +13,6 @@
         
 
 - ARR:
-    - Prowlarr:
-        href: https://prowlarr.darksaber.fyi
-        widget:
-            type: prowlarr
-            url: https://prowlarr.darksaber.fyi
-            key: {{HOMEPAGE_VAR_PROWLARR_KEY}}
 
 
 - My Third Group:

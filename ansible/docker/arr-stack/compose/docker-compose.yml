@@ -12,6 +12,7 @@ services:
     networks:
       - proxy
     labels:
+      # Traefik
       - "traefik.enable=true"
       - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.darksaber.fyi`)"
       - "traefik.http.routers.prowlarr.entrypoints=https"
@@ -19,6 +20,14 @@ services:
       - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
       - "traefik.http.routers.prowlarr.middlewares=default-whitelist@file"
       - "traefik.docker.network=proxy"
+      # Homepage
+      - "homepage.group=ARR"
+      - "homepage.name=Prowlarr"
+      - "homepage.href=https://prowlarr.darksaber.fyi"
+      - "homepage.description=Indexer Manager"
+      - "homepage.widget.type=prowlarr"
+      - "homepage.widget.url=https://prowlarr.darksaber.fyi"
+      - "homepage.widget.key=${PROWLARR_APIKEY}"
     restart: unless-stopped
 
   umlautadaptarr:
