@@ -18,7 +18,7 @@ PORT=443
 
 # See [documentation](docs/SERVICES.md) on running a separate collaboration
 # server, for normal operation this does not need to be set.
-COLLABORATION_URL=
+# COLLABORATION_URL=
 
 # Specify what storage system to use. Possible value is one of "s3" or "local".
 # For "local", the avatar images and document attachments will be saved on local disk. 
@@ -61,7 +61,6 @@ OIDC_DISPLAY_NAME=Pocket ID
 
 # Space separated auth scopes.
 OIDC_SCOPES=openid profile email
-
 
 # –––––––––––––––– OPTIONAL ––––––––––––––––
 
