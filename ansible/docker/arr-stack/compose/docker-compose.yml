@@ -23,6 +23,7 @@ services:
       # Homepage
       - "homepage.group=ARR"
       - "homepage.name=Prowlarr"
+      - "homepage.icon=sh-Prowlarr.svg"
       - "homepage.href=https://prowlarr.darksaber.fyi"
       - "homepage.description=Indexer Manager"
       - "homepage.widget.type=prowlarr"
@@ -67,6 +68,7 @@ services:
       # Homepage
       - "homepage.group=ARR"
       - "homepage.name=Sonarr"
+      - "homepage.icon=sh-Sonarr.svg"
       - "homepage.href=https://sonarr.darksaber.fyi"
       - "homepage.description=TV Show Manager"
       - "homepage.widget.type=sonarr"
