@@ -60,6 +60,9 @@ services:
       - "homepage.name=Sonarr"
       - "homepage.href=https://sonarr.darksaber.fyi"
       - "homepage.description=TV Show Manager"
+      - "homepage.widget.type=sonarr"
+      - "homepage.widget.url=http://sonarr"
+      - "homepage.widget.key=${SONARR_APIKEY}"
     restart: unless-stopped
 
   radarr:
