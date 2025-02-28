@@ -47,6 +47,7 @@ services:
     networks:
       - proxy
     labels:
+      # Traefik
       - "traefik.enable=true"
       - "traefik.http.routers.sonarr.rule=Host(`sonarr.darksaber.fyi`)"
       - "traefik.http.routers.sonarr.entrypoints=https"
@@ -54,6 +55,11 @@ services:
       - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
       - "traefik.http.routers.sonarr.middlewares=default-whitelist@file"
       - "traefik.docker.network=proxy"
+      # Homepage
+      - "homepage.group=ARR"
+      - "homepage.name=Sonarr"
+      - "homepage.href=https://sonarr.darksaber.fyi"
+      - "homepage.description=TV Show Manager"
     restart: unless-stopped
 
   radarr:
