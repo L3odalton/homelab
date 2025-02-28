@@ -10,8 +10,3 @@
             url: https://dns-01.darksaber.fyi
             key: {{HOMEPAGE_VAR_TECHNITIUM_01_KEY}}
             range: LastDay
-        
-- My Third Group:
-    - My Third Service:
-        href: http://localhost/
-        description: Homepage is 😎

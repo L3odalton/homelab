@@ -1,0 +1,69 @@
+services:
+  outline:
+    image: docker.getoutline.com/outlinewiki/outline:latest
+    env_file: ./docker.env
+    volumes:
+      - outline-data:/var/lib/outline/data
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - proxy
+      - backend
+    labels:
+      # Traefik
+      - "traefik.enable=true"
+      - "traefik.http.routers.outline.rule=Host(`docs.darksaber.fyi`)"
+      - "traefik.http.routers.outline.entrypoints=https"
+      - "traefik.http.routers.outline.tls=true"
+      - "traefik.http.services.outline.loadbalancer.server.port=3000"
+      - "traefik.http.routers.outline.middlewares=default-whitelist@file"
+      - "traefik.docker.network=proxy"
+      # Homepage
+      - "homepage.group=Misc"
+      - "homepage.name=Outline"
+      - "homepage.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/png/outline.png"
+      - "homepage.href=https://docs.darksaber.fyi"
+      - "homepage.description=A fast, collaborative, knowledge base"
+    restart: unless-stopped
+
+  redis:
+    image: redis
+    env_file: ./docker.env
+    networks:
+      - backend
+    volumes:
+      - /home/mgrsys/docker/outline-stack/redis/redis.conf:/redis.conf
+    command: ["redis-server", "/redis.conf"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+
+  postgres:
+    image: postgres
+    env_file: ./docker.env
+    networks:
+      - backend
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", ${POSTGRES_DB}, "-U", ${POSTGRES_USER}]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+
+volumes:
+  storage-data:
+  database-data:
+
+networks:
+  proxy:
+    external: true
+  backend:
+    internal: true
