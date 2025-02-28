@@ -22,6 +22,16 @@ services:
       - "traefik.docker.network=proxy"
     restart: unless-stopped
 
+  socket-proxy:
+    image: lscr.io/linuxserver/socket-proxy:latest
+    container_name: socket-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /run   
+
 networks:
   proxy:
     external: true
