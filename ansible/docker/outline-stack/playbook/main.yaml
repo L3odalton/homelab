@@ -41,12 +41,13 @@
       loop:
         - { src: "{{ repo_dir }}/ansible/docker/{{ service_name }}/compose/", dest: "{{ compose_dir }}/" }
 
-    - name: Remove existing docker.env
+    - name: Remove existing docker.env and .env
       file:
         path: "{{ compose_dir }}/{{ item }}"
         state: absent
       loop:
         - "docker.env"
+        - ".env"
       ignore_errors: yes
 
     - name: Inject Secrets from 1Password
@@ -55,6 +56,7 @@
         test -f "{{ item.output }}"
       loop:
         - { input: "{{ compose_dir }}/docker.env.tpl", output: "{{ compose_dir }}/docker.env", name: "docker.env" }
+        - { input: "{{ compose_dir }}/.env.tpl", output: "{{ compose_dir }}/.env", name: ".env" }
       environment:
         OP_SERVICE_ACCOUNT_TOKEN: "{{ op_token }}"
       no_log: yes

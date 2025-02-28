@@ -47,7 +47,7 @@ services:
     networks:
       - backend
     volumes:
-      - database-data:/var/lib/postgresql/data
+      - outline-db-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}"]
       interval: 30s
@@ -59,8 +59,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
 
 volumes:
-  storage-data:
-  database-data:
+  outline-data:
+  outline-db-data:
 
 networks:
   proxy:

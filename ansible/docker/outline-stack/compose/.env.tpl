@@ -1,0 +1,4 @@
+COMPOSE_PROJECT_NAME=outline-stack
+POSTGRES_USER=outlinedbuser
+POSTGRES_PASSWORD=op://secrets/outline/env/postgrespassword
+POSTGRES_DB=outlinedb
