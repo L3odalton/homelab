@@ -64,10 +64,13 @@ accessLog:
     headers:
       defaultMode: drop # drop all headers per default
       names:
-          User-Agent: keep # log user agent strings
+        User-Agent: keep # log user agent strings
 
 experimental:
   plugins:
     traefik-oidc-auth:
       moduleName: "github.com/sevensolutions/traefik-oidc-auth"
       version: "v0.7.0"
+    traefikoidc:
+      moduleName: github.com/lukaszraczylo/traefikoidc
+      version: v0.5.34
