@@ -14,7 +14,7 @@ PGSSLMODE=disable
 REDIS_URL=redis://redis:6379
 
 URL=https://docs.darksaber.fyi
-PORT=443
+PORT=3000
 
 # Specify what storage system to use. Possible value is one of "s3" or "local".
 # For "local", the avatar images and document attachments will be saved on local disk. 
