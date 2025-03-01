@@ -27,6 +27,15 @@ http:
         - "10.0.0.0/8"
         - "192.168.0.0/16"
         - "172.16.0.0/12"
+  
+  pocket-id:
+    plugin:
+      traefik-oidc-auth:
+        Provider:
+          Url: "https://id.darksaber.fyi"
+          ClientId: 4a6cbb74-10e6-4644-a3f6-92e23c67c56a
+          UsePkce: true
+        Scopes: ["openid", "profile", "email"]
 
     secured:
       chain:
