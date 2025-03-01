@@ -14,14 +14,17 @@ services:
     labels:
       # Traefik
       - "traefik.enable=true"
+      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
       - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.darksaber.fyi`)"
       - "traefik.http.routers.prowlarr.entrypoints=https"
       - "traefik.http.routers.prowlarr.tls=true"
-      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
       - "traefik.http.routers.prowlarr.middlewares=default-whitelist@file,pocket-id@file"
       - "traefik.http.routers.prowlarr.priority=1"
-      - traefik.http.routers.prowlarr-api.rule=(Host(`prowlarr.darksaber.fyi`) && PathPrefix(`/api`))
-      - traefik.http.routers.prowlarr-api.priority=3
+      - "traefik.http.routers.prowlarr-api.rule=(Host(`prowlarr.darksaber.fyi`) && PathPrefix(`/api`))"
+      - "traefik.http.routers.prowlarr-api.entrypoints=https"
+      - "traefik.http.routers.prowlarr-api.tls=true"
+      - "traefik.http.routers.prowlarr-api.middlewares=default-whitelist@file"
+      - "traefik.http.routers.prowlarr-api.priority=3"
       - "traefik.docker.network=proxy"
       # Homepage
       - "homepage.group=ARR"
