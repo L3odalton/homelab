@@ -19,6 +19,9 @@ services:
       - "traefik.http.routers.prowlarr.tls=true"
       - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
       - "traefik.http.routers.prowlarr.middlewares=default-whitelist@file,pocket-id@file"
+      - "traefik.http.routers.prowlarr.priority=1"
+      - traefik.http.routers.prowlarr-api.rule=(Host(`prowlarr.darksaber.fyi`) && PathPrefix(`/api`))
+      - traefik.http.routers.prowlarr-api.priority=3
       - "traefik.docker.network=proxy"
       # Homepage
       - "homepage.group=ARR"
