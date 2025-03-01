@@ -31,14 +31,14 @@ http:
     pocket-id:
       plugin:
         traefik-oidc-auth:
-          Secret: ${POCKET_ID_SECRET}
+          Secret: "{{ env `POCKET_ID_SECRET` }}"
           CallbackUri: "https://auth.darksaber.fyi/oidc/callback"
           SessionCookie:
             Domain: ".darksaber.fyi"
           Provider:
             Url: "https://id.darksaber.fyi"
             ClientId: 4a6cbb74-10e6-4644-a3f6-92e23c67c56a
-            ClientSecret: ${POCKET_ID_CLIENT_SECRET}
+            ClientSecret: "{{ env `POCKET_ID_CLIENT_SECRET` }}"
             UsePkce: false
           Scopes: ["openid", "profile", "email"]
 
