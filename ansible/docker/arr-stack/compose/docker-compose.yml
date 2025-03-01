@@ -19,7 +19,7 @@ services:
       - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.darksaber.fyi`)"
       - "traefik.http.routers.prowlarr.entrypoints=https"
       - "traefik.http.routers.prowlarr.tls=true"
-      - "traefik.http.routers.prowlarr.middlewares=default-whitelist@file,pocket-id@file"
+      - "traefik.http.routers.prowlarr.middlewares=default-whitelist@file,pocket-id-2@file"
       - "traefik.http.routers.prowlarr.priority=1"
       # API Service
       - "traefik.http.routers.prowlarr-api.rule=(Host(`prowlarr.darksaber.fyi`) && PathPrefix(`/api`))"
