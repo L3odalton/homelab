@@ -32,11 +32,10 @@ http:
       plugin:
         traefik-oidc-auth:
           Secret: "{{ env `POCKET_ID_SECRET` }}"
-          CallbackUri: "https://id.darksaber.fyi/oidc/callback"
           Provider:
             Url: "https://id.darksaber.fyi/"
             ClientId: 4a6cbb74-10e6-4644-a3f6-92e23c67c56a
-            ClientSecret: "{{ env `POCKET_ID_CLIENT_SECRET` }}"
+            ClientSecretEnv: "POCKET_ID_CLIENT_SECRET"
             TokenValidation: "IdToken"
           Scopes: ["openid", "profile", "email"]
 
