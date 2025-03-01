@@ -60,7 +60,7 @@ services:
       - "traefik.http.routers.sonarr.rule=Host(`sonarr.darksaber.fyi`)"
       - "traefik.http.routers.sonarr.entrypoints=https"
       - "traefik.http.routers.sonarr.tls=true"
-      - "traefik.http.routers.sonarr.middlewares=default-whitelist@file,pocket-id@file"
+      - "traefik.http.routers.sonarr.middlewares=default-whitelist@file,pocket-id-2@file"
       - "traefik.http.routers.sonarr.priority=1"
       # API Service
       - "traefik.http.routers.sonarr-api.rule=(Host(`sonarr.darksaber.fyi`) && PathPrefix(`/api`))"
@@ -101,7 +101,7 @@ services:
       - "traefik.http.routers.radarr.rule=Host(`radarr.darksaber.fyi`)"
       - "traefik.http.routers.radarr.entrypoints=https"
       - "traefik.http.routers.radarr.tls=true"
-      - "traefik.http.routers.radarr.middlewares=default-whitelist@file,pocket-id@file"
+      - "traefik.http.routers.radarr.middlewares=default-whitelist@file,pocket-id-2@file"
       - "traefik.http.routers.radarr.priority=1"
       # API Service
       - "traefik.http.routers.radarr-api.rule=(Host(`radarr.darksaber.fyi`) && PathPrefix(`/api`))"
