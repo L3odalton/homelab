@@ -11,13 +11,31 @@ services:
     volumes:
       - /home/mgrsys/docker/boilerplate/config:/app/config
     labels:
+      # Traefik
       - "traefik.enable=true"
-      - "traefik.http.routers.boilerplate.rule=Host(`boilerplate.darksaber.fyi`)"
-      - "traefik.http.routers.boilerplate.entrypoints=https"
-      - "traefik.http.routers.boilerplate.tls=true"
-      - "traefik.http.services.boilerplate.loadbalancer.server.port=5055"
-      - "traefik.http.routers.boilerplate.middlewares=default-whitelist@file"
+      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
+      # Web Service
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.darksaber.fyi`)"
+      - "traefik.http.routers.prowlarr.entrypoints=https"
+      - "traefik.http.routers.prowlarr.tls=true"
+      - "traefik.http.routers.prowlarr.middlewares=default-whitelist@file,pocket-id@file"
+      - "traefik.http.routers.prowlarr.priority=1"
+      # API Service
+      - "traefik.http.routers.prowlarr-api.rule=(Host(`prowlarr.darksaber.fyi`) && PathPrefix(`/api`))"
+      - "traefik.http.routers.prowlarr-api.entrypoints=https"
+      - "traefik.http.routers.prowlarr-api.tls=true"
+      - "traefik.http.routers.prowlarr-api.middlewares=default-whitelist@file"
+      - "traefik.http.routers.prowlarr-api.priority=3"
       - "traefik.docker.network=proxy"
+      # Homepage
+      - "homepage.group=*arr-stack"
+      - "homepage.name=Prowlarr"
+      - "homepage.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/svg/prowlarr.svg"
+      - "homepage.href=https://prowlarr.darksaber.fyi"
+      - "homepage.description=Indexer Manager"
+      - "homepage.widget.type=prowlarr"
+      - "homepage.widget.url=https://prowlarr.darksaber.fyi"
+      - "homepage.widget.key=${PROWLARR_APIKEY}"
     restart: unless-stopped
 
 networks:

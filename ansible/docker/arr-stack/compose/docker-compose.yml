@@ -15,11 +15,13 @@ services:
       # Traefik
       - "traefik.enable=true"
       - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
+      # Web Service
       - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.darksaber.fyi`)"
       - "traefik.http.routers.prowlarr.entrypoints=https"
       - "traefik.http.routers.prowlarr.tls=true"
       - "traefik.http.routers.prowlarr.middlewares=default-whitelist@file,pocket-id@file"
       - "traefik.http.routers.prowlarr.priority=1"
+      # API Service
       - "traefik.http.routers.prowlarr-api.rule=(Host(`prowlarr.darksaber.fyi`) && PathPrefix(`/api`))"
       - "traefik.http.routers.prowlarr-api.entrypoints=https"
       - "traefik.http.routers.prowlarr-api.tls=true"
@@ -27,7 +29,7 @@ services:
       - "traefik.http.routers.prowlarr-api.priority=3"
       - "traefik.docker.network=proxy"
       # Homepage
-      - "homepage.group=ARR"
+      - "homepage.group=*arr-stack"
       - "homepage.name=Prowlarr"
       - "homepage.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/svg/prowlarr.svg"
       - "homepage.href=https://prowlarr.darksaber.fyi"
@@ -35,18 +37,6 @@ services:
       - "homepage.widget.type=prowlarr"
       - "homepage.widget.url=https://prowlarr.darksaber.fyi"
       - "homepage.widget.key=${PROWLARR_APIKEY}"
-    restart: unless-stopped
-
-  umlautadaptarr:
-    image: pcjones/umlautadaptarr:latest
-    container_name: umlautadaptarr
-    environment:
-      - TZ=Europe/Berlin
-      - SONARR__ENABLED=true
-      - SONARR__HOST=http://sonarr:8989
-      - SONARR__APIKEY=${SONARR_APIKEY}
-    networks:
-      - proxy
     restart: unless-stopped
 
   sonarr:
@@ -65,14 +55,22 @@ services:
     labels:
       # Traefik
       - "traefik.enable=true"
+      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+      # Web Service
       - "traefik.http.routers.sonarr.rule=Host(`sonarr.darksaber.fyi`)"
       - "traefik.http.routers.sonarr.entrypoints=https"
       - "traefik.http.routers.sonarr.tls=true"
-      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
-      - "traefik.http.routers.sonarr.middlewares=default-whitelist@file"
+      - "traefik.http.routers.sonarr.middlewares=default-whitelist@file,pocket-id@file"
+      - "traefik.http.routers.sonarr.priority=1"
+      # API Service
+      - "traefik.http.routers.sonarr-api.rule=(Host(`sonarr.darksaber.fyi`) && PathPrefix(`/api`))"
+      - "traefik.http.routers.sonarr-api.entrypoints=https"
+      - "traefik.http.routers.sonarr-api.tls=true"
+      - "traefik.http.routers.sonarr-api.middlewares=default-whitelist@file"
+      - "traefik.http.routers.sonarr-api.priority=3"
       - "traefik.docker.network=proxy"
       # Homepage
-      - "homepage.group=ARR"
+      - "homepage.group=*arr-stack"
       - "homepage.name=Sonarr"
       - "homepage.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sonarr-light.svg"
       - "homepage.href=https://sonarr.darksaber.fyi"
@@ -96,33 +94,44 @@ services:
     networks:
       - proxy
     labels:
+      # Traefik
       - "traefik.enable=true"
+      - "traefik.http.services.radarr.loadbalancer.server.port=7878"
+      # Web Service
       - "traefik.http.routers.radarr.rule=Host(`radarr.darksaber.fyi`)"
       - "traefik.http.routers.radarr.entrypoints=https"
       - "traefik.http.routers.radarr.tls=true"
-      - "traefik.http.services.radarr.loadbalancer.server.port=7878"
-      - "traefik.http.routers.radarr.middlewares=default-whitelist@file"
+      - "traefik.http.routers.radarr.middlewares=default-whitelist@file,pocket-id@file"
+      - "traefik.http.routers.radarr.priority=1"
+      # API Service
+      - "traefik.http.routers.radarr-api.rule=(Host(`radarr.darksaber.fyi`) && PathPrefix(`/api`))"
+      - "traefik.http.routers.radarr-api.entrypoints=https"
+      - "traefik.http.routers.radarr-api.tls=true"
+      - "traefik.http.routers.radarr-api.middlewares=default-whitelist@file"
+      - "traefik.http.routers.radarr-api.priority=3"
       - "traefik.docker.network=proxy"
+      # Homepage
+      - "homepage.group=*arr-stack"
+      - "homepage.name=Radarr"
+      - "homepage.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/svg/radarr-light.svg"
+      - "homepage.href=https://radarr.darksaber.fyi"
+      - "homepage.description=TV Show Manager"
+      - "homepage.widget.type=radarr"
+      - "homepage.widget.url=https://radarr.darksaber.fyi"
+      - "homepage.widget.key=${RADARR_APIKEY}"
     restart: unless-stopped
 
-  suggestarr:
-    image: ciuse99/suggestarr:latest
-    container_name: sugestarr
+  umlautadaptarr:
+    image: pcjones/umlautadaptarr:latest
+    container_name: umlautadaptarr
     environment:
-      - LOG_LEVEL=info
-    volumes:
-      - /home/mgrsys/docker/arr-stack/sugestarr/config:/app/config/config_files
+      - TZ=Europe/Berlin
+      - SONARR__ENABLED=true
+      - SONARR__HOST=http://sonarr:8989
+      - SONARR__APIKEY=${SONARR_APIKEY}
     networks:
       - proxy
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.sugestarr.rule=Host(`sugestarr.darksaber.fyi`)"
-      - "traefik.http.routers.sugestarr.entrypoints=https"
-      - "traefik.http.routers.sugestarr.tls=true"
-      - "traefik.http.services.sugestarr.loadbalancer.server.port=5000"
-      - "traefik.http.routers.sugestarr.middlewares=default-whitelist@file"
-      - "traefik.docker.network=proxy"
-    restart: always
+    restart: unless-stopped
 
 networks:
   proxy:
