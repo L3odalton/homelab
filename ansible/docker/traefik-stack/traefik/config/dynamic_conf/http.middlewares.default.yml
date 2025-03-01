@@ -32,11 +32,11 @@ http:
       plugin:
         traefik-oidc-auth:
           Secret: "{{ env `POCKET_ID_SECRET` }}"
-          # CallbackUri: "https://auth.darksaber.fyi/oidc/callback"
-          # SessionCookie:
-          #   Domain: ".darksaber.fyi"
+          CallbackUri: "https://auth.darksaber.fyi/oidc/callback"
+          SessionCookie:
+            Domain: ".darksaber.fyi"
           Provider:
-            Url: "https://id.darksaber.fyi"
+            Url: "https://id.darksaber.fyi/"
             ClientId: 4a6cbb74-10e6-4644-a3f6-92e23c67c56a
             ClientSecret: "{{ env `POCKET_ID_CLIENT_SECRET` }}"
             TokenValidation: "IdToken"
