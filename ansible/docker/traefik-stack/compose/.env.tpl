@@ -3,3 +3,4 @@ COMPOSE_PROJECT_NAME=traefik
 # BOUNCER_KEY_FIREWALL=op://secrets/traefik/env/bouncerkeyfirewall
 TRAEFIK_DASHBOARD_CREDENTIALS=op://secrets/traefik/env/dashboardcreds
 CF_API_EMAIL=op://secrets/traefik/env/mail
+POCKET_ID_CLIENT_SECRET==op://secrets/traefik/env/pocketidclientsecret
