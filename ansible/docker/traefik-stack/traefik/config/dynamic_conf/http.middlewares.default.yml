@@ -31,6 +31,7 @@ http:
     pocket-id:
       plugin:
         traefik-oidc-auth:
+          Secret: "secret"
           Provider:
             Url: "https://id.darksaber.fyi"
             ClientId: 4a6cbb74-10e6-4644-a3f6-92e23c67c56a
