@@ -13,7 +13,7 @@ PGSSLMODE=disable
 
 REDIS_URL=redis://redis:6379
 
-URL=docs.darksaber.fyi
+URL=https://docs.darksaber.fyi
 PORT=443
 
 # Specify what storage system to use. Possible value is one of "s3" or "local".
