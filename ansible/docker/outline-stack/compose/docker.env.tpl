@@ -28,14 +28,6 @@ FILE_STORAGE_LOCAL_ROOT_DIR=/var/lib/outline/data
 # Maximum allowed size for the uploaded attachment.
 FILE_STORAGE_UPLOAD_MAX_SIZE=262144000
 
-# Override the maximum size of document imports, generally this should be lower
-# than the document attachment maximum size.
-FILE_STORAGE_IMPORT_MAX_SIZE=
-
-# Override the maximum size of workspace imports, these can be especially large
-# and the files are temporary being automatically deleted after a period of time.
-FILE_STORAGE_WORKSPACE_IMPORT_MAX_SIZE=
-
 # –––––––––––––– AUTHENTICATION ––––––––––––––
 
 # To configure generic OIDC auth, you'll need some kind of identity provider.
