@@ -29,7 +29,7 @@ services:
       - "traefik.http.routers.prowlarr-api.priority=3"
       - "traefik.docker.network=proxy"
       # Homepage
-      - "homepage.group=*arr-stack"
+      - "homepage.group=Media"
       - "homepage.name=Prowlarr"
       - "homepage.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/svg/prowlarr.svg"
       - "homepage.href=https://prowlarr.darksaber.fyi"
@@ -70,7 +70,7 @@ services:
       - "traefik.http.routers.sonarr-api.priority=3"
       - "traefik.docker.network=proxy"
       # Homepage
-      - "homepage.group=*arr-stack"
+      - "homepage.group=Media"
       - "homepage.name=Sonarr"
       - "homepage.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sonarr-light.svg"
       - "homepage.href=https://sonarr.darksaber.fyi"
@@ -111,7 +111,7 @@ services:
       - "traefik.http.routers.radarr-api.priority=3"
       - "traefik.docker.network=proxy"
       # Homepage
-      - "homepage.group=*arr-stack"
+      - "homepage.group=Media"
       - "homepage.name=Radarr"
       - "homepage.icon=https://cdn.jsdelivr.net/gh/selfhst/icons/svg/radarr-light.svg"
       - "homepage.href=https://radarr.darksaber.fyi"
